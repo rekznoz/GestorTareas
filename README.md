@@ -1,7 +1,7 @@
 ## **Gestor de Tareas Avanzado con Vue.js**
 
 ## **Descripción General**
-Una aplicación web para la gestión de tareas, similar a **Todoist o Microsoft To Do**, pero con mi estilo personalizado. La aplicación permitirá a los usuarios crear, editar y eliminar tareas, asignar fechas de vencimiento, prioridades y categorías, y recibir recordatorios en el navegador. Además, se incluirán gráficos de productividad y estadísticas de tareas completadas.
+Una aplicación web para la gestión de tareas, similar a **Trello o Microsoft To Do**, pero con mi estilo personalizado. La aplicación permitirá a los usuarios crear, editar y eliminar tareas, asignar fechas de vencimiento, prioridades y categorías, y recibir recordatorios en el navegador. Además, se incluirán gráficos de productividad y estadísticas de tareas completadas.
 
 ---
 
