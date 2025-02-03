@@ -119,13 +119,44 @@ Para diferenciarse en el mercado, la aplicación propuesta ofrecerá las siguien
 3. **Análisis de Productividad**: Proporcionar informes detallados y visualizaciones sobre el rendimiento del usuario, ayudando a identificar áreas de mejora y optimizar la gestión del tiempo.
 
 4. **Funcionalidad Offline**: Permitir a los usuarios acceder y gestionar sus tareas sin conexión a internet, con sincronización automática cuando se restablezca la conexión.
+
 ---
 
-## 🚀 **Tecnologías a Utilizar**
-- 🎨 **Frontend:** Vue.js
-- 🎨 **UI:** CSS
-- 🗄️ **Base de datos:** Firebase Firestore
-- 🔔 **Notificaciones:** Web Notifications API (Si es posible)
-- 🔑 **Autenticación:** Firebase Auth
+## **Tecnologías a Utilizar**
+
+### **1. Framework Frontend**
+#### **Vue.js**
+- Reactivo y fácil de aprender en comparación con React o Angular.
+- Composición API para mejor reutilización de código y modularidad.
+
+---
+
+### **2. Gestión del Estado**
+#### **Pinia**
+- Fácil de integrar con Vue DevTools.
+
+---
+
+### **3. Base de Datos**
+#### **Firebase Firestore**
+- Base de datos NoSQL en tiempo real.
+- Fácil integración con Vue.js y autenticación mediante Firebase Auth.
+
+---
+
+### **4. Autenticación de Usuarios**
+#### **Firebase Authentication**
+- Proporciona autenticación segura con Google, Facebook, email y más.
+- Fácil implementación y escalabilidad.
+
+---
+
+### **5. Notificaciones y Funcionalidades Extras**
+
+#### **Web Notifications API**
+- Para recordatorios y notificaciones en el navegador.
+
+#### **Chart.js / D3.js**
+- Para generación de gráficos estadísticos sobre el progreso de las tareas.
 
 ---
