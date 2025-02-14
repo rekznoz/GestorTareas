@@ -1,0 +1,29 @@
+#app {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: auto;
+    gap: 0 0;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    grid-column: 1 / -1;;
+    grid-row: 1;
+}
+
+.main {
+    grid-column: 1 / -1;
+    grid-row: 2 / 12;
+    background-color: #2a5298;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.footer {
+    grid-column: 1 / -1;
+    grid-row: 12;
+}
