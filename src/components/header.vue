@@ -16,6 +16,7 @@ export default {
   </header>
 </template>
 
+
 <style scoped>
 .header {
   background: linear-gradient(135deg, #1e3c72, #2a5298);
