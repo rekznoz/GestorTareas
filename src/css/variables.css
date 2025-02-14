@@ -1,0 +1,15 @@
+:root {
+
+    --color-fondo-principal: #0460D9;
+    --color-fondo-secundario: #085CA6;
+    --color-fondo-terciario: #021D40;
+    --color-fondo-cuaternario: #011126;
+
+    --color-texto-principal: #FFFFFF;
+    --color-texto-secundario: #C4C4C4;
+    --color-texto-terciario: #A0A0A0;
+
+    --color-resaltado: #FFD700;
+    --color-resaltado-oscuro: #FFA500;
+
+}
