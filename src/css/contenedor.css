@@ -16,7 +16,7 @@
 .main {
     grid-column: 1 / -1;
     grid-row: 2 / 12;
-    background-color: #2a5298;
+    background-color: var(--color-fondo-principal);
     height: 100%;
     display: flex;
     justify-content: center;
