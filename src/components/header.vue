@@ -16,10 +16,9 @@ export default {
   </header>
 </template>
 
-
 <style scoped>
 .header {
-  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  background: linear-gradient(90deg, var(--color-fondo-principal), var(--color-fondo-secundario));
   padding: 20px 0;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
@@ -45,7 +44,7 @@ export default {
 /* Enlaces de navegación */
 .nav-link {
   text-decoration: none;
-  color: #fff;
+  color: var(--color-texto-principal);
   font-size: 18px;
   font-weight: bold;
   padding: 10px 15px;
@@ -60,7 +59,7 @@ export default {
   bottom: -5px;
   width: 0;
   height: 3px;
-  background: #ffcc00;
+  background: var(--color-resaltado-oscuro);
   transition: all 0.3s ease;
   transform: translateX(-50%);
 }
@@ -70,7 +69,7 @@ export default {
 }
 
 .nav-link:hover {
-  color: #ffcc00;
+  color: var(--color-resaltado-oscuro);
 }
 
 @media (max-width: 768px) {
