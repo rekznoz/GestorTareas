@@ -1,5 +1,5 @@
-import './css/contenedor.css'
-import './css/reset.css'
+
+import './css/import.css'
 
 import { createApp } from 'vue'
 import App from './App.vue'
