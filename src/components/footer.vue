@@ -12,14 +12,13 @@ export default {
 
 <style scoped>
 .footer {
-  background: linear-gradient(135deg, #2a5298, #1e3c72);
-  color: #fff;
+  background: linear-gradient(90deg, var(--color-fondo-secundario), var(--color-fondo-principal));
+  color: var(--color-texto-principal);
   text-align: center;
   padding: 15px 0;
   font-size: 16px;
   font-weight: bold;
   position: relative;
-  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .footer::before {
@@ -27,7 +26,7 @@ export default {
   display: block;
   width: 100px;
   height: 4px;
-  background: #ffcc00;
+  background: var(--color-resaltado-oscuro);
   margin: 0 auto 10px auto;
   border-radius: 2px;
 }
@@ -40,7 +39,7 @@ export default {
 
 .footer:hover .footer-text {
   opacity: 1;
-  color: #ffcc00;
+  color: var(--color-resaltado-oscuro);
 }
 
 @media (max-width: 768px) {
