@@ -9,7 +9,9 @@ export default {
     <nav class="navbar">
       <ul class="nav-list">
         <li class="nav-item">
-          <a href="#" class="nav-link">Inicio</a>
+          <router-link to="/" class="nav-link">Inicio</router-link>
+          <router-link to="/contacto" class="nav-link">Contacto</router-link>
+          <router-link to="/login" class="nav-link">Login</router-link>
         </li>
       </ul>
     </nav>
