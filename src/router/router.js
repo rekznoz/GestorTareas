@@ -26,6 +26,21 @@ const routes = [
     },
     */
     {
+        path: '/contacto',
+        component: () => import('@/pages/Contacto.vue'),
+        name: 'contacto'
+    },
+    {
+        path: '/login',
+        component: () => import('@/pages/Login.vue'),
+        name: 'login'
+    },
+    {
+        path: '/registro',
+        component: () => import('@/pages/Registro.vue'),
+        name: 'registro'
+    },
+    {
         path: '/:pathMatch(.*)*', // 404 Not Found
         component: () => import('@/pages/Error.vue'),
         name: 'Error',
