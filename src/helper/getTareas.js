@@ -297,15 +297,22 @@
 */
 
 export const getTareas = async () => {
-    const tareas = Array.from(Array(4)).map( async () => {
-        //const id = Math.floor(Math.random() * 898) + 1;
-        //const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
-        const res = await fetch(`http://127.0.0.1:8000/api/v1/tareas`);
-        const data = await res.json();
-        return {
-            id: data.id,
-            name: data.name,
-        }
-    });
-    return Promise.all(tareas);
-}
+
+    const res = await fetch(`http://127.0.0.1:8000/api/v1/tareas`);
+    const data = await res.json();
+
+    if (!Array.isArray(data)) {
+        throw new Error("La respuesta de la API no es una lista de tareas");
+    }
+
+    return data.map(tarea => ({
+        id: tarea.id,
+        nombre: tarea.nombre,
+        descripcion: tarea.descripcion,
+        fecha_inicio: tarea.fecha_inicio,
+        fecha_fin: tarea.fecha_fin,
+        estado: tarea.estado,
+        user_id: tarea.user.id,
+    }));
+
+};
