@@ -1,6 +1,34 @@
 <script>
+import {Field, Form, ErrorMessage} from 'vee-validate';
+import * as yup from 'yup';
+import {mapState} from "pinia";
+import userStore from "@/stores/userStore.js";
+import {getUsuarioAuth} from "@/helper/getUsuarioAuth.js";
+import Swal from 'sweetalert2'
+
+const schema = yup.object({
+  email: yup.string().email().required(),
+  password: yup.string().min(6).required(),
+});
+
+function onSubmit(values) {
+  alert(JSON.stringify(values, null, 2));
+}
+
 export default {
-  name: "Login"
+  name: "contador",
+  components: {ErrorMessage, Field},
+
+  data() {
+    return {
+      usuario: "",
+    };
+  },
+
+  computed: {
+    ...mapState(userStore, ["user", "isLoggedIn"]),
+  },
+
 }
 </script>
 
@@ -11,17 +39,19 @@ export default {
       <p>Por favor, inicia sesión para acceder a la aplicación.</p>
     </section>
     <section class="formulario">
-      <form action="">
+      <Form :validation-schema="schema" @submit="onSubmit">
         <div class="form-group">
           <label for="email">Email</label>
-          <input type="email" id="email" name="email" placeholder="Tu email" required>
+          <Field name="email" id="email" type="email"/>
+          <ErrorMessage name="email"/>
         </div>
         <div class="form-group">
           <label for="password">Contraseña</label>
-          <input type="password" id="password" name="password" placeholder="Tu contraseña" required>
+          <Field name="password" id="password" type="password"/>
+          <ErrorMessage name="password"/>
         </div>
         <button type="submit" class="btn">Iniciar Sesión</button>
-      </form>
+      </Form>
       <span class="registro">¿No tienes una cuenta? <router-link to="/registro">Regístrate</router-link></span>
     </section>
   </div>
@@ -78,8 +108,7 @@ export default {
   margin-bottom: 5px;
 }
 
-.form-group input,
-.form-group textarea {
+.form-group input {
   width: 100%;
   padding: 10px;
   font-size: 1rem;
@@ -88,9 +117,19 @@ export default {
   box-sizing: border-box;
 }
 
-.form-group textarea {
-  resize: none;
-  height: 200px;
+.form-group input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.form-group span {
+  color: red;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  display: block;
+  text-transform: capitalize;
+  text-align: center;
 }
 
 .btn {
