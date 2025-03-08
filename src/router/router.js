@@ -12,19 +12,21 @@ const routes = [
     {
         path: '/tareas/:id',
         component: () => import('@/pages/Tareas.vue'),
-        name: "tareas",
+        name: "tareasUsuarioID",
         props: (route) => {
             const id = Number(route.params.id);
             return { id };
         }
     },
-    /*
     {
-        path: '/lista',
-        component: () => import('@/modules/pokemon/pages/Lista.vue'),
-        name: 'lista'
+        path: '/tarea/:id',
+        component: () => import('@/pages/Tarea.vue'),
+        name: "tareaID",
+        props: (route) => {
+            const id = Number(route.params.id);
+            return { id };
+        }
     },
-    */
     {
         path: '/contacto',
         component: () => import('@/pages/Contacto.vue'),
