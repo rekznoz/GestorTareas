@@ -77,7 +77,7 @@ export default {
             :class="{ completada: tarea.estado === 'completada' }">
           <span>{{ tarea.nombre }}</span>
           <div class="acciones">
-            <router-link :to="`/tareas/${tarea.id}`" class="btn">Ver</router-link>
+            <router-link :to="`/tarea/${tarea.id}`" class="btn">Ver</router-link>
             <button @click="completarTarea(tarea.id)" class="btn">
               {{ tarea.estado === 'completada' ? "Reabrir" : "Completar" }}
             </button>
