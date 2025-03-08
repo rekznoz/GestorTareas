@@ -1,13 +1,10 @@
 <script>
-
-import Contador from './components/Contador.vue'
-import Indecision from "./components/Indecision.vue"
-import Footer from "@/components/footer.vue";
-import Header from "@/components/header.vue";
+import Footer from "@/components/Footer.vue";
+import Header from "@/components/Header.vue";
 
 export default {
   components: {
-    Header,
+    Header: Header,
     Footer: Footer
   }
 }
