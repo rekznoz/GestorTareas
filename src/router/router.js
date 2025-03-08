@@ -9,16 +9,16 @@ const routes = [
         component: Nosotros,
         name: 'nosotros'
     },
-    /*
     {
-        path: '/:id',
-        component: () => import('@/modules/pokemon/pages/Pokemon.vue'),
-        name: "pokemonID",
+        path: '/tareas/:id',
+        component: () => import('@/pages/Tareas.vue'),
+        name: "tareas",
         props: (route) => {
             const id = Number(route.params.id);
             return { id };
         }
     },
+    /*
     {
         path: '/lista',
         component: () => import('@/modules/pokemon/pages/Lista.vue'),
