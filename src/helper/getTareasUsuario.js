@@ -303,8 +303,6 @@ export const getTareasUsuario = async (id) => {
     const respuesta = await res.json();
     const data = respuesta.data;
 
-    console.log(data)
-
     if (!Array.isArray(data)) {
         throw new Error("La respuesta de la API no es una lista de tareas");
     }
