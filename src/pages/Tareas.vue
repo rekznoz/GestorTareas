@@ -7,8 +7,8 @@ export default {
   data() {
     return {
       tareas: [],
-      nuevaTarea: ""
-    }
+      tareaArrastrada: null, // Tarea que se está arrastrando
+    };
   },
 
   props: {
@@ -20,29 +20,8 @@ export default {
 
   methods: {
 
-    agregarTarea() {
-      if (this.nuevaTarea.trim() === "") {
-        return;
-      }
-      this.tareas.push({
-        id: this.tareas.length + 1,
-        nombre: this.nuevaTarea,
-        completada: false
-      });
-      this.nuevaTarea = "";
-    },
-
-    eliminarTarea(id) {
-      this.tareas = this.tareas.filter(tarea => tarea.id !== id);
-    },
-
     completarTarea(id) {
-      this.tareas = this.tareas.map(tarea => {
-        if (tarea.id === id) {
-          tarea.completada = !tarea.completada;
-        }
-        return tarea;
-      });
+      console.log(id)
     },
 
     async cargarTareas() {
@@ -51,8 +30,30 @@ export default {
       } catch (error) {
         console.error(error);
       }
-    }
+    },
 
+    dragStart(id) {
+      this.tareaArrastrada = id;
+    },
+
+    dragEnd() {
+      this.tareaArrastrada = null;
+    },
+
+    handleDrop() {
+      if (this.tareaArrastrada !== null) {
+        this.eliminarTarea(this.tareaArrastrada);
+      }
+    },
+
+    async eliminarTarea(id) {
+      try {
+        //await fetch(`/api/tareas/${id}`, { method: "DELETE" });
+        this.tareas = this.tareas.filter(t => t.id !== id);
+      } catch (error) {
+        console.error("Error al eliminar la tarea:", error);
+      }
+    }
   },
 
   watch: {
@@ -74,19 +75,28 @@ export default {
       <h2>Tareas</h2>
       <ul>
         <li v-for="tarea in tareas" :key="tarea.id"
-            :class="{ completada: tarea.estado === 'completada' }">
+            :class="{ completada: tarea.completada }"
+            draggable="true"
+            @dragstart="dragStart(tarea.id)"
+            @dragend="dragEnd">
           <span>{{ tarea.nombre }}</span>
           <div class="acciones">
             <router-link :to="`/tarea/${tarea.id}`" class="btn">Ver</router-link>
             <button @click="completarTarea(tarea.id)" class="btn">
-              {{ tarea.estado === 'completada' ? "Reabrir" : "Completar" }}
+              {{ tarea.completada ? "Reabrir" : "Completar" }}
             </button>
             <button @click="eliminarTarea(tarea.id)" class="btn eliminar">Eliminar</button>
           </div>
         </li>
       </ul>
     </section>
+
+    <!-- Zona de eliminación -->
+    <div class="dropzone" @dragover.prevent @drop="handleDrop">
+      🗑️ Arrastra aquí para eliminar
+    </div>
   </div>
+
 </template>
 
 <style scoped>
@@ -127,10 +137,16 @@ li {
   align-items: center;
   box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease-in-out;
+  cursor: grab;
 }
 
 li:hover {
   transform: scale(1.02);
+}
+
+li:active {
+  cursor: grabbing;
+  opacity: 0.7;
 }
 
 li.completada {
@@ -166,6 +182,22 @@ li.completada {
 .acciones {
   display: flex;
   gap: 5px;
+}
+
+.dropzone {
+  margin-top: 20px;
+  padding: 15px;
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  background: #ffdddd;
+  border: 2px dashed #ff6b6b;
+  border-radius: 10px;
+  transition: background 0.3s ease-in-out;
+}
+
+.dropzone:hover {
+  background: #ffb3b3;
 }
 
 </style>
