@@ -2,12 +2,13 @@ import userStore from "@/stores/userStore.js";
 
 export const crearTarea = async (tarea) => {
     try {
+        tarea.user_id = userStore().user.id
         const res = await fetch(import.meta.env.VITE_API_URL_TAREAS, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 // Barier token
-                'Authorization': `Bearer ${userStore.access_token}`
+                'Authorization': `Bearer ${userStore().access_token}`
             },
             body: JSON.stringify(tarea),
         });
