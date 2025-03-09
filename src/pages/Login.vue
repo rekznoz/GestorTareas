@@ -30,9 +30,7 @@ export default {
                     text: 'Usuario o contraseña incorrectos',
                   })
                 } else {
-                  console.log(usuario);
                   userStore().login(usuario);
-                  console.log(userStore().user);
                   this.$router.push("/");
                 }
               },
