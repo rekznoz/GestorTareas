@@ -299,7 +299,7 @@
 export const getTareasUsuario = async (id) => {
     if (!id) throw new Error("El ID de usuario es requerido");
 
-    const res = await fetch(`http://127.0.0.1:8000/api/v1/tareas?user_id=${id}`);
+    const res = await fetch(`${import.meta.env.VITE_API_URL_TAREAS}?user_id=${id}`);
     const respuesta = await res.json();
     const data = respuesta.data;
 
