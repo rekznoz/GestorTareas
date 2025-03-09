@@ -1,5 +1,8 @@
 <script>
 import {getTareasUsuario} from "@/helper/getTareasUsuario.js";
+import {crearTarea} from "@/helper/crearTarea.js";
+import Swal from "sweetalert2";
+import userStore from "@/stores/userStore.js";
 
 export default {
   name: "Tareas",
@@ -14,7 +17,6 @@ export default {
     };
   },
 
-
   props: {
     id: {
       type: Number,
@@ -23,6 +25,8 @@ export default {
   },
 
   methods: {
+
+    userStore,
 
     completarTarea(id) {
       console.log(id)
@@ -76,6 +80,37 @@ export default {
       }
     },
 
+    mostrarModalCrearTarea() {
+      const modal = document.querySelector(".contenedor-modal-crear-tarea");
+      modal.style.display = "flex";
+    },
+
+    enviarFormularioTarea() {
+      const form = document.querySelector(".modal-crear-tarea");
+
+      if (!form.checkValidity()) {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Todos los campos son obligatorios",
+        });
+        return
+      }
+
+      if (form.fecha_inicio.value > form.fecha_fin.value) {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "La fecha de inicio debe ser anterior a la fecha de fin",
+        });
+        return;
+      }
+
+      const formData = new FormData(form);
+      const tarea = Object.fromEntries(formData.entries());
+      crearTarea(tarea);
+    }
+
   },
 
   watch: {
@@ -99,7 +134,7 @@ export default {
 
 <template>
   <div class="container">
-    <section class="tareas">
+    <section class="tareas" v-if="tareasPaginadas.length >= 1">
       <h2>Tareas</h2>
       <ul>
         <li v-for="tarea in tareasPaginadas" :key="tarea.id"
@@ -110,16 +145,20 @@ export default {
           <span>{{ tarea.nombre }}</span>
           <div class="acciones">
             <router-link :to="`/tarea/${tarea.id}`" class="btn">Ver</router-link>
-            <button @click="completarTarea(tarea.id)" class="btn">
+            <button v-if="userStore().user.id === tarea.user_id" @click="completarTarea(tarea.id)" class="btn">
               {{ tarea.completada ? "Reabrir" : "Completar" }}
             </button>
-            <button @click="eliminarTarea(tarea.id)" class="btn eliminar">Eliminar</button>
+            <button v-if="userStore().user.id === tarea.user_id" @click="eliminarTarea(tarea.id)" class="btn eliminar">Eliminar</button>
           </div>
         </li>
       </ul>
     </section>
+    <section v-else class="tareas">
+      <h2 v-if="userStore().user.id !== id">Este usuario no tiene tareas!</h2>
+      <h2 v-else>No tienes tareas!</h2>
+    </section>
 
-    <div class="paginacion">
+    <div v-if="totalPaginas > 1"  class="paginacion">
       <button @click="cambiarPagina(paginaActual - 1)" :disabled="paginaActual === 1">
         <
       </button>
@@ -130,11 +169,39 @@ export default {
     </div>
 
     <!-- Zona de eliminación -->
-    <div class="dropzone" @dragover.prevent @drop="handleDrop">
+    <div v-if="userStore().user.id === id && tareasPaginadas.length >= 1" class="dropzone" @dragover.prevent @drop="handleDrop">
       🗑️ Arrastra aquí para eliminar
     </div>
 
+    <button v-if="userStore().user.id === id" @click="mostrarModalCrearTarea" class="btn-crear">Crear Tarea</button>
+
   </div>
+
+  <!-- Modal para crear tarea -->
+  <!--
+    {
+    "nombre": "Desarrollar API de Tareas",
+    "descripcion": "Crear el CRUD de tareas usando Laravel.",
+    "fecha_inicio": "2025-03-08",
+    "fecha_fin": "2025-03-15",
+    "estado": "pendiente"
+    }
+   -->
+  <div class="contenedor-modal-crear-tarea">
+    <form class="modal-crear-tarea" @submit.prevent="enviarFormularioTarea">
+      <h2>Crear Tarea</h2>
+      <label for="nombre">Nombre:</label>
+      <input type="text" id="nombre" name="nombre" required>
+      <label for="descripcion">Descripción:</label>
+      <textarea id="descripcion" name="descripcion" required></textarea>
+      <label for="fecha_inicio">Fecha de inicio:</label>
+      <input type="date" id="fecha_inicio" name="fecha_inicio" required>
+      <label for="fecha_fin">Fecha de fin:</label>
+      <input type="date" id="fecha_fin" name="fecha_fin" required>
+      <button type="submit">Crear</button>
+    </form>
+  </div>
+
 </template>
 
 <style scoped>
@@ -268,6 +335,21 @@ li.completada {
   background: #ffb3b3;
 }
 
+.btn-crear {
+  background: #a67c52;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 10px;
+  transition: background 0.3s ease;
+}
+
+.btn-crear:hover {
+  background: #8c6239;
+}
+
 @media (max-width: 1150px) {
   .container {
     width: 90%;
@@ -281,6 +363,92 @@ li.completada {
 
   .dropzone {
     font-size: 1rem;
+  }
+}
+
+/* Modal */
+
+.contenedor-modal-crear-tarea {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-crear-tarea {
+  width: 25%;
+  background: white;
+  padding: 50px;
+  border-radius: 10px;
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.modal-crear-tarea h2 {
+  text-decoration: underline;
+  font-weight: bold;
+  font-size: 2rem;
+  margin-bottom: 25px;
+  color: #8c5a2b;
+  text-shadow: 1px 1px 0 #fdf5e6;
+}
+
+.modal-crear-tarea label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.modal-crear-tarea input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.modal-crear-tarea textarea {
+  width: 100%;
+  padding-bottom: 100px;
+  margin-top: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  resize: none;
+}
+
+.modal-crear-tarea button {
+  width: 100%;
+  background: #a67c52;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 20px;
+  transition: background 0.3s ease;
+}
+
+.modal-crear-tarea button:hover {
+  background: #8c6239;
+}
+
+@media (max-width: 1000px) {
+  .modal-crear-tarea {
+    width: 50%;
+  }
+}
+
+@media (max-width: 600px) {
+  .modal-crear-tarea {
+    width: 70%;
   }
 }
 
