@@ -30,11 +30,15 @@ const userStore = defineStore('userStore', {
                 this.user = user
             },
             logout() {
+                /*
                 logoutAuth().then(r => {
                         this.isLoggedIn = false
                         this.user = {}
                     }
                 )
+                */
+                this.isLoggedIn = false
+                this.user = {}
             },
         },
 
