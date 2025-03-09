@@ -298,7 +298,7 @@
 
 export const getTareas = async () => {
 
-    const res = await fetch(`http://127.0.0.1:8000/api/v1/tareas`);
+    const res = await fetch(import.meta.env.VITE_API_URL_TAREAS);
     const data = await res.json();
 
     if (!Array.isArray(data)) {
