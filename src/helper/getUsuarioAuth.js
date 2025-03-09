@@ -1,4 +1,5 @@
 // http://127.0.0.1:8000/api/v1/auth/login
+import userStore from "@/stores/userStore.js";
 
 /*
 
@@ -20,7 +21,7 @@
 export const getUsuarioAuth = async (email, password) => {
     if (!email || !password) throw new Error("El email y password son requeridos");
 
-    const res = await fetch('http://127.0.0.1:8000/api/v1/auth/login', {
+    const res = await fetch(import.meta.env.VITE_API_URL_AUTH, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -33,11 +34,20 @@ export const getUsuarioAuth = async (email, password) => {
 };
 
 export const logoutAuth = async () => {
-    const res = await fetch('http://127.0.0.1:8000/api/v1/auth/logout', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        }
+    try {
+        const token = userStore().user.access_token;
+
+        const res = await fetch(import.meta.env.VITE_API_URL_LOGOUT, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` // Aquí se agrega el token
+            }
+        });
+
+        return await res.json(); // Devuelve la respuesta del backend
+    } catch (error) {
+        console.error('Error en logoutAuth:', error);
+        throw error;
     }
-    );
-}
+};
