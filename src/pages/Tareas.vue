@@ -3,6 +3,7 @@ import {getTareasUsuario} from "@/helper/getTareasUsuario.js";
 import {crearTarea} from "@/helper/crearTarea.js";
 import Swal from "sweetalert2";
 import userStore from "@/stores/userStore.js";
+import router from "@/router/router.js";
 
 export default {
   name: "Tareas",
@@ -85,6 +86,11 @@ export default {
       modal.style.display = "flex";
     },
 
+    ocultarModalCrearTarea() {
+      const modal = document.querySelector(".contenedor-modal-crear-tarea");
+      modal.style.display = "none";
+    },
+
     enviarFormularioTarea() {
       const form = document.querySelector(".modal-crear-tarea");
 
@@ -108,7 +114,18 @@ export default {
 
       const formData = new FormData(form);
       const tarea = Object.fromEntries(formData.entries());
-      crearTarea(tarea);
+      crearTarea(tarea).then(
+          (tarea) => {
+            console.log(tarea.data);
+            this.tareas.push(tarea.data);
+            this.actualizarPaginacion();
+            this.ocultarModalCrearTarea();
+          },
+          (error) => {
+            console.error("Error al crear la tarea:", error);
+          }
+      )
+
     }
 
   },
@@ -148,7 +165,9 @@ export default {
             <button v-if="userStore().user.id === tarea.user_id" @click="completarTarea(tarea.id)" class="btn">
               {{ tarea.completada ? "Reabrir" : "Completar" }}
             </button>
-            <button v-if="userStore().user.id === tarea.user_id" @click="eliminarTarea(tarea.id)" class="btn eliminar">Eliminar</button>
+            <button v-if="userStore().user.id === tarea.user_id" @click="eliminarTarea(tarea.id)" class="btn eliminar">
+              Eliminar
+            </button>
           </div>
         </li>
       </ul>
@@ -158,7 +177,7 @@ export default {
       <h2 v-else>No tienes tareas!</h2>
     </section>
 
-    <div v-if="totalPaginas > 1"  class="paginacion">
+    <div v-if="totalPaginas > 1" class="paginacion">
       <button @click="cambiarPagina(paginaActual - 1)" :disabled="paginaActual === 1">
         <
       </button>
@@ -169,7 +188,8 @@ export default {
     </div>
 
     <!-- Zona de eliminación -->
-    <div v-if="userStore().user.id === id && tareasPaginadas.length >= 1" class="dropzone" @dragover.prevent @drop="handleDrop">
+    <div v-if="userStore().user.id === id && tareasPaginadas.length >= 1" class="dropzone" @dragover.prevent
+         @drop="handleDrop">
       🗑️ Arrastra aquí para eliminar
     </div>
 
@@ -198,7 +218,15 @@ export default {
       <input type="date" id="fecha_inicio" name="fecha_inicio" required>
       <label for="fecha_fin">Fecha de fin:</label>
       <input type="date" id="fecha_fin" name="fecha_fin" required>
+      <label for="estado">Estado:</label>
+      <select id="estado" name="estado" required>
+        <option value="pendiente">Pendiente</option>
+        <option value="en_proceso">En Proceso</option>
+        <option value="completada">Completada</option>
+      </select>
+      <input type="number" id="user_id" name="user_id" hidden>
       <button type="submit">Crear</button>
+      <button type="reset" @click="ocultarModalCrearTarea">Cancelar</button>
     </form>
   </div>
 
@@ -422,6 +450,15 @@ li.completada {
   border: 1px solid #ccc;
   box-sizing: border-box;
   resize: none;
+}
+
+.modal-crear-tarea select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
 }
 
 .modal-crear-tarea button {
