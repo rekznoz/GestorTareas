@@ -1,35 +1,52 @@
 <script>
-import {Field, Form, ErrorMessage} from 'vee-validate';
-import * as yup from 'yup';
 import {mapState} from "pinia";
 import userStore from "@/stores/userStore.js";
 import {getUsuarioAuth} from "@/helper/getUsuarioAuth.js";
 import Swal from 'sweetalert2'
 
-const schema = yup.object({
-  email: yup.string().email().required(),
-  password: yup.string().min(6).required(),
-});
-
-function onSubmit(values) {
-  alert(JSON.stringify(values, null, 2));
-}
-
 export default {
-  name: "contador",
-  components: {ErrorMessage, Field},
-
+  name: "Login",
   data() {
     return {
-      usuario: "",
+      email: "",
+      password: "",
     };
   },
-
   computed: {
     ...mapState(userStore, ["user", "isLoggedIn"]),
   },
-
-}
+  methods: {
+    login() {
+      if (!this.email || !this.password) {
+        alert("Por favor, completa todos los campos.");
+        return;
+      }
+      getUsuarioAuth(this.email, this.password)
+          .then((usuario) => {
+                if (usuario.error) {
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Usuario o contraseña incorrectos',
+                  })
+                } else {
+                  console.log(usuario);
+                  userStore().login(usuario);
+                  console.log(userStore().user);
+                  this.$router.push("/");
+                }
+              },
+              () => {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: 'Usuario o contraseña incorrectos',
+                })
+              }
+          )
+    },
+  },
+};
 </script>
 
 <template>
@@ -39,19 +56,17 @@ export default {
       <p>Por favor, inicia sesión para acceder a la aplicación.</p>
     </section>
     <section class="formulario">
-      <Form :validation-schema="schema" @submit="onSubmit">
+      <form @submit.prevent="login">
         <div class="form-group">
           <label for="email">Email</label>
-          <Field name="email" id="email" type="email"/>
-          <ErrorMessage name="email"/>
+          <input v-model="email" type="email" id="email" name="email" placeholder="Tu email" required>
         </div>
         <div class="form-group">
           <label for="password">Contraseña</label>
-          <Field name="password" id="password" type="password"/>
-          <ErrorMessage name="password"/>
+          <input v-model="password" type="password" id="password" name="password" placeholder="Tu contraseña" required>
         </div>
         <button type="submit" class="btn">Iniciar Sesión</button>
-      </Form>
+      </form>
       <span class="registro">¿No tienes una cuenta? <router-link to="/registro">Regístrate</router-link></span>
     </section>
   </div>
