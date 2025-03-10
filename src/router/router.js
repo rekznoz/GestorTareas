@@ -1,4 +1,3 @@
-
 import {createRouter, createWebHistory} from 'vue-router';
 
 import Nosotros from "@/pages/Inicio.vue";
@@ -15,7 +14,7 @@ const routes = [
         name: "tareasUsuarioID",
         props: (route) => {
             const id = Number(route.params.id);
-            return { id };
+            return {id};
         }
     },
     {
@@ -24,7 +23,7 @@ const routes = [
         name: "tareaID",
         props: (route) => {
             const id = Number(route.params.id);
-            return { id };
+            return {id};
         }
     },
     {
