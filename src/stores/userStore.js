@@ -1,4 +1,4 @@
-import { defineStore } from "pinia"
+import {defineStore} from "pinia"
 
 const usuarioVacio = {
     id: 0,
@@ -18,13 +18,13 @@ const userStore = defineStore("userStore", {
     }),
 
     actions: {
-        login({ user, access_token }) {
+        login({user, access_token}) {
             if (!access_token) return
 
             this.isLoggedIn = true
             this.user = user
             this.access_token = access_token
-            localStorage.setItem("userStore", JSON.stringify({ user, access_token }))
+            localStorage.setItem("userStore", JSON.stringify({user, access_token}))
         },
 
         logout() {
