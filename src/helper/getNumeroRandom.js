@@ -1,4 +1,3 @@
-
 // funcion que simula una promesa que se resuelve con un numero random
 const getNumeroRandom = () => {
     return new Promise((resolve) => {
