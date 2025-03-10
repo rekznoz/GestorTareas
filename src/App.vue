@@ -12,9 +12,9 @@ export default {
 </script>
 
 <template>
-  <Header />
+  <Header/>
   <main class="main">
-    <RouterView />
+    <RouterView/>
   </main>
-  <Footer />
+  <Footer/>
 </template>
