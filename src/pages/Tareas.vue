@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import userStore from "@/stores/userStore.js";
 import router from "@/router/router.js";
 import {obtenerPaginacion} from "@/helper/obtenerPaginacion.js";
+import configStore from "@/stores/configStore.js";
 
 export default {
   name: "Tareas",
@@ -32,7 +33,6 @@ export default {
     };
   },
 
-
   props: {
     id: {
       type: Number,
@@ -43,6 +43,8 @@ export default {
   methods: {
 
     userStore,
+
+    configStore,
 
     edicionTarea(id) {
       const tarea = this.tareas.find(t => t.id === id);
@@ -259,11 +261,11 @@ export default {
             @dragend="dragEnd">
           <span>{{ tarea.nombre }}</span>
           <div class="acciones">
-            <router-link :to="`/tarea/${tarea.id}`" class="btn">Ver</router-link>
-            <button v-if="userStore().user.id === tarea.user_id" @click="edicionTarea(tarea.id)" class="btn">
+            <router-link v-if="!configStore().dragAndDrop" :to="`/tarea/${tarea.id}`" class="btn">Ver</router-link>
+            <button v-if="userStore().user.id === tarea.user_id && !configStore().dragAndDrop" @click="edicionTarea(tarea.id)" class="btn">
               Editar
             </button>
-            <button v-if="userStore().user.id === tarea.user_id" @click="eliminarTarea(tarea.id)" class="btn eliminar">
+            <button v-if="userStore().user.id === tarea.user_id && !configStore().dragAndDrop" @click="eliminarTarea(tarea.id)" class="btn eliminar">
               Eliminar
             </button>
           </div>
@@ -286,9 +288,21 @@ export default {
     </div>
 
     <!-- Zona de eliminación -->
-    <div v-if="userStore().user.id === id && tareasPaginadas.length >= 1" class="dropzone" @dragover.prevent
+    <div v-if="userStore().user.id === id && tareasPaginadas.length >= 1 && configStore().dragAndDrop" class="dropzone eliminar" @dragover.prevent
          @drop="handleDrop">
       🗑️ Arrastra aquí para eliminar
+    </div>
+
+    <!-- Zona de Edicion -->
+    <div v-if="userStore().user.id === id && tareasPaginadas.length >= 1 && configStore().dragAndDrop" class="dropzone editar" @dragover.prevent
+         @drop="handleDrop">
+      📝 Arrastra aquí para editar
+    </div>
+
+    <!-- Zona de Ver -->
+    <div v-if="userStore().user.id === id && tareasPaginadas.length >= 1 && configStore().dragAndDrop" class="dropzone ver" @dragover.prevent
+         @drop="handleDrop">
+      👁️ Arrastra aquí para ver
     </div>
 
     <button v-if="userStore().user.id === id" @click="mostrarOcultarModal()" class="btn-crear">Crear Tarea</button>
@@ -464,14 +478,36 @@ li.completada {
   text-align: center;
   font-size: 1.2rem;
   font-weight: bold;
-  background: #ffdddd;
-  border: 2px dashed #ff6b6b;
   border-radius: 10px;
   transition: background 0.3s ease-in-out;
 }
 
-.dropzone:hover {
-  background: #ffb3b3;
+.dropzone.eliminar {
+  background: #ffdddd;
+  border: 2px dashed #ff6b6b;
+}
+
+.dropzone.eliminar:hover {
+  background: #ff6b6b;
+
+}
+
+.dropzone.editar {
+  background: #ffedcc;
+  border: 2px dashed #ffac33;
+}
+
+.dropzone.editar:hover {
+  background: #ffac33;
+}
+
+.dropzone.ver {
+  background: #c9f7f5;
+  border: 2px dashed #17c3b2;
+}
+
+.dropzone.ver:hover {
+  background: #17c3b2;
 }
 
 .btn-crear {
