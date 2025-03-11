@@ -1,10 +1,10 @@
 <script>
 import {defineComponent} from "vue";
-import Header from "./components/Header.vue";
-import Footer from "./components/Footer.vue";
+import Header from "@/components/header.vue";
+import Footer from "@/components/footer.vue";
 
 export default defineComponent({
-  components: {Footer, Header}
+  components: {Footer: Footer, Header: Header}
 })
 </script>
 
