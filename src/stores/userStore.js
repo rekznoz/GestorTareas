@@ -1,4 +1,5 @@
 import {defineStore} from "pinia"
+import {logoutAuth} from "@/helper/getUsuarioAuth.js";
 
 const usuarioVacio = {
     id: 0,
@@ -28,10 +29,18 @@ const userStore = defineStore("userStore", {
         },
 
         logout() {
-            this.isLoggedIn = false
-            this.user = usuarioVacio
-            this.access_token = null
-            localStorage.removeItem("userStore")
+            logoutAuth().then(
+                () => {
+                    this.isLoggedIn = false
+                    this.user = usuarioVacio
+                    this.access_token = null
+                    localStorage.removeItem("userStore")
+                }
+            ).catch(
+                (error) => {
+                    console.error("Logout failed: ", error)
+                }
+            )
         },
 
         checkTokenValidity() {
