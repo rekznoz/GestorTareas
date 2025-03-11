@@ -1,11 +1,11 @@
 <script>
-import Footer from "@/components/Footer.vue";
-import Header from "@/components/Header.vue";
+import footer from "@/components/Footer.vue";
+import header from "@/components/Header.vue";
 
 export default {
   components: {
-    Header: Header,
-    Footer: Footer
+    Header: header,
+    Footer: footer
   }
 }
 
