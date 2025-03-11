@@ -33,7 +33,7 @@ export default {
         alert("La contraseña debe tener al menos 8 caracteres.");
         return;
       }
-      
+
       if (!this.passwordIgual) {
         alert("Las contraseñas no coinciden.");
         return;
