@@ -1,5 +1,5 @@
 import {defineStore} from "pinia"
-import {logoutAuth} from "@/helper/getUsuarioAuth.js";
+import {actualizarToken, logoutAuth} from "@/helper/getUsuarioAuth.js";
 
 const usuarioVacio = {
     id: 0,
