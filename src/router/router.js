@@ -18,6 +18,15 @@ const routes = [
         }
     },
     {
+        path: '/perfil/:id',
+        component: () => import('@/pages/Perfil.vue'),
+        name: "perfilID",
+        props: (route) => {
+            const id = Number(route.params.id);
+            return {id};
+        }
+    },
+    {
         path: '/tarea/:id',
         component: () => import('@/pages/Tarea.vue'),
         name: "tareaID",
