@@ -7,6 +7,7 @@ import {editarTarea} from "@/helper/editarTarea.js";
 import Swal from "sweetalert2";
 import userStore from "@/stores/userStore.js";
 import router from "@/router/router.js";
+import {obtenerPaginacion} from "@/helper/obtenerPaginacion.js";
 
 export default {
   name: "Tareas",
@@ -107,9 +108,7 @@ export default {
     },
 
     actualizarPaginacion() {
-      const inicio = (this.paginaActual - 1) * this.tareasPorPagina;
-      const fin = inicio + this.tareasPorPagina;
-      this.tareasPaginadas = this.tareas.slice(inicio, fin);
+      this.tareasPaginadas = obtenerPaginacion(this.tareas, this.paginaActual, this.tareasPorPagina);
     },
 
     cambiarPagina(nuevaPagina) {
