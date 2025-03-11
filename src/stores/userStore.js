@@ -50,10 +50,10 @@ const userStore = defineStore("userStore", {
                 const isExpired = tokenData.exp * 1000 < Date.now()
                 if (isExpired) {
                     this.logout()
-                    console.log("Expired token: ", tokenData)
+                    //console.log("Expired token: ", tokenData)
                 } else {
                     this.login(stored)
-                    console.log(stored)
+                    //console.log(stored)
                 }
             }
         }
