@@ -1,28 +1,90 @@
 <script>
+import {computed} from "vue";
+import {mapState} from "pinia";
+import userStore from "@/stores/userStore.js";
+import {registerUsuarioAuth} from "@/helper/getUsuarioAuth.js";
+import Swal from "sweetalert2";
+
 export default {
-  name: "Registro"
+  name: "Registro",
+  data() {
+    return {
+      nombre: "",
+      email: "",
+      password: "",
+      password_confirmation: "",
+    };
+  },
+  computed: {
+    passwordIgual() {
+      return this.password === this.password_confirmation;
+    },
+    ...mapState(userStore, ["user", "isLoggedIn"]),
+  },
+  methods: {
+    async registrar() {
+
+      if (!this.nombre || !this.email || !this.password || !this.password_confirmation) {
+        alert("Por favor, completa todos los campos.");
+        return;
+      }
+
+      if (!this.password.length >= 8) {
+        alert("La contraseña debe tener al menos 8 caracteres.");
+        return;
+      }
+      
+      if (!this.passwordIgual) {
+        alert("Las contraseñas no coinciden.");
+        return;
+      }
+
+      registerUsuarioAuth(this.nombre, this.email, this.password, this.password_confirmation).then(
+        (usuario) => {
+          if (usuario.error) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'No se pudo registrar el usuario',
+            })
+          } else {
+            userStore().login(usuario);
+            this.$router.push("/");
+          }
+        },
+        () => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudo registrar el usuario',
+          })
+        }
+      )
+    },
+  }
 }
+
 </script>
 
 <template>
   <div class="container">
     <section class="formulario">
-      <form action="">
+      <form @submit.prevent="registrar">
         <div class="form-group">
           <label for="nombre">Nombre</label>
-          <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required>
+          <input v-model="nombre" type="text" id="nombre" name="nombre" placeholder="Tu nombre" required>
         </div>
         <div class="form-group">
           <label for="email">Email</label>
-          <input type="email" id="email" name="email" placeholder="Tu email" required>
+          <input v-model="email" type="email" id="email" name="email" placeholder="Tu email" required>
         </div>
         <div class="form-group">
           <label for="password">Contraseña</label>
-          <input type="password" id="password" name="password" placeholder="Tu contraseña" required>
+          <input v-model="password" type="password" id="password" name="password" placeholder="Tu contraseña" required>
         </div>
         <div class="form-group">
-          <label for="password">Confirmar Contraseña</label>
-          <input type="password" id="password" name="password" placeholder="Confirma tu contraseña" required>
+          <label for="password_confirmation">Confirmar Contraseña</label>
+          <input v-model="password_confirmation" type="password_confirmation" id="password_confirmation" name="password_confirmation" placeholder="Confirma tu contraseña" required>
         </div>
         <button type="submit" class="btn">Registrarse</button>
       </form>
