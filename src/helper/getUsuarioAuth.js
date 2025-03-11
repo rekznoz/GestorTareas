@@ -35,7 +35,7 @@ export const getUsuarioAuth = async (email, password) => {
 
 export const logoutAuth = async () => {
     try {
-        const token = userStore().user.access_token;
+        const token = userStore().access_token;
 
         const res = await fetch(import.meta.env.VITE_API_URL_LOGOUT, {
             method: 'POST',
