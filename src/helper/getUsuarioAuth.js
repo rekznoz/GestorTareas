@@ -56,10 +56,8 @@ export const logoutAuth = async () => {
             console.error(data.message || 'Error during logout');
             return
         }
-
         console.log('Logout successful:', data);
     } catch (error) {
         console.error('Error during logout:', error.message);
     }
-
 };
