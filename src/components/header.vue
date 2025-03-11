@@ -15,6 +15,7 @@ export default {
           <router-link to="/" class="nav-link">Inicio</router-link>
           <router-link to="/contacto" class="nav-link">Contacto</router-link>
           <router-link v-if="userStore().isLoggedIn" :to="`/tareas/${userStore().user.id}`" class="nav-link">Tareas</router-link>
+          <router-link v-if="userStore().isLoggedIn" :to="`/perfil/${userStore().user.id}`" class="nav-link">Perfil</router-link>
           <button v-if="userStore().isLoggedIn" @click="userStore().logout" class="nav-link">Logout</button>
           <router-link v-else to="/login" class="nav-link">Login</router-link>
         </li>
