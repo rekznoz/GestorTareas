@@ -26,7 +26,7 @@ export const getUsuarioAuth = async (email, password) => {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({email, password})
     });
 
     return await res.json();
@@ -37,17 +37,29 @@ export const logoutAuth = async () => {
     try {
         const token = userStore().access_token;
 
+        if (!token) {
+            console.error('No token found');
+            return
+        }
+
         const res = await fetch(import.meta.env.VITE_API_URL_LOGOUT, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}` // Aquí se agrega el token
+                'Authorization': `Bearer ${token}`
             }
         });
 
-        return await res.json(); // Devuelve la respuesta del backend
+        const data = await res.json();
+
+        if (!res.ok) {
+            console.error(data.message || 'Error during logout');
+            return
+        }
+
+        console.log('Logout successful:', data);
     } catch (error) {
-        console.error('Error en logoutAuth:', error);
-        throw error;
+        console.error('Error during logout:', error.message);
     }
+
 };
