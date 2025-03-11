@@ -33,6 +33,40 @@ export const getUsuarioAuth = async (email, password) => {
 
 };
 
+export const registerUsuarioAuth = async (name, email, password, password_confirmation) => {
+
+    console.log({ name, email, password, password_confirmation });
+
+    if (!name || !email || !password || !password_confirmation) {
+        throw new Error("Todos los campos son requeridos");
+    }
+
+    try {
+        // Realizar la solicitud POST
+        const res = await fetch(import.meta.env.VITE_API_URL_REGISTER, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ name, email, password, password_confirmation }),
+        });
+
+        if (!res.ok) {
+            console.error(res);
+            return
+        }
+
+        // Devolver los datos de la respuesta si todo es correcto
+        return await res.json();
+
+    } catch (error) {
+        // Manejar cualquier error en la solicitud
+        console.error('Error en el registro:', error.message);
+        throw new Error('Hubo un problema al intentar registrarte. Intenta nuevamente más tarde.');
+    }
+};
+
+
 export const logoutAuth = async () => {
     try {
         const token = userStore().access_token;
