@@ -61,3 +61,32 @@ export const logoutAuth = async () => {
         console.error('Error during logout:', error.message);
     }
 };
+
+export const actualizarToken = async (access_token) => {
+    try {
+        if (!access_token) {
+            console.error('No token found');
+            return
+        }
+
+        const res = await fetch(import.meta.env.VITE_API_URL_REFRESH, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${access_token}`
+            }
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            console.error(data.message || 'Error during token refresh');
+            return
+        }
+
+        console.log('Token refreshed:', data);
+        userStore().login(data);
+    } catch (error) {
+        console.error('Error during token refresh:', error.message);
+    }
+}
