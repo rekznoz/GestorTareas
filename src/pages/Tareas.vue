@@ -1,6 +1,9 @@
 <script>
 import {getTareasUsuario} from "@/helper/getTareasUsuario.js";
 import {crearTarea} from "@/helper/crearTarea.js";
+import {eliminarTarea} from "@/helper/eliminarTarea.js";
+import {editarTarea} from "@/helper/editarTarea.js";
+
 import Swal from "sweetalert2";
 import userStore from "@/stores/userStore.js";
 import router from "@/router/router.js";
@@ -15,8 +18,19 @@ export default {
       tareaArrastrada: null,
       paginaActual: 1,
       tareasPorPagina: 10,
+      esEdicion: false,  // Controla si estamos en modo edición
+      tareaForm: {
+        id: null,
+        nombre: '',
+        descripcion: '',
+        fecha_inicio: '',
+        fecha_fin: '',
+        estado: 'pendiente',
+        user_id: this.id,
+      },
     };
   },
+
 
   props: {
     id: {
@@ -29,8 +43,11 @@ export default {
 
     userStore,
 
-    completarTarea(id) {
-      console.log(id)
+    edicionTarea(id) {
+      const tarea = this.tareas.find(t => t.id === id);
+      if (tarea) {
+        this.mostrarOcultarModal(tarea);
+      }
     },
 
     async cargarTareas() {
@@ -58,14 +75,35 @@ export default {
     },
 
     async eliminarTarea(id) {
-      try {
-        //await fetch(`/api/tareas/${id}`, { method: "DELETE" });
-        this.tareas = this.tareas.filter(t => t.id !== id);
-        this.actualizarPaginacion();
-
-      } catch (error) {
-        console.error("Error al eliminar la tarea:", error);
-      }
+      Swal.fire(
+          {
+            title: "¿Estás seguro?",
+            text: "Una vez eliminada no se podrá recuperar",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Sí, eliminar",
+            cancelButtonText: "Cancelar",
+          }
+      ).then((result) => {
+            if (result.isConfirmed) {
+              try {
+                eliminarTarea(id).then(
+                    () => {
+                      this.tareas = this.tareas.filter(tarea => tarea.id !== id);
+                      this.actualizarPaginacion();
+                    },
+                    (error) => {
+                      console.error("Error al eliminar la tarea:", error);
+                    }
+                )
+              } catch (error) {
+                console.error("Error al eliminar la tarea:", error);
+              }
+            }
+          }
+      )
     },
 
     actualizarPaginacion() {
@@ -81,14 +119,28 @@ export default {
       }
     },
 
-    mostrarModalCrearTarea() {
+    mostrarOcultarModal(tarea = null) {
       const modal = document.querySelector(".contenedor-modal-crear-tarea");
-      modal.style.display = "flex";
-    },
 
-    ocultarModalCrearTarea() {
-      const modal = document.querySelector(".contenedor-modal-crear-tarea");
-      modal.style.display = "none";
+      if (tarea !== null) {
+        // Si se pasa una tarea, es modo edición
+        this.esEdicion = true;
+        this.tareaForm = {...tarea}; // Rellenamos el formulario con la tarea a editar
+      } else {
+        // Si no se pasa tarea, es modo creación
+        this.esEdicion = false;
+        this.tareaForm = {
+          id: null,
+          nombre: '',
+          descripcion: '',
+          fecha_inicio: '',
+          fecha_fin: '',
+          estado: 'pendiente',
+          user_id: this.id,
+        };  // Limpiamos los campos
+      }
+
+      modal.style.display = modal.style.display === "flex" ? "none" : "flex";
     },
 
     enviarFormularioTarea() {
@@ -100,7 +152,7 @@ export default {
           title: "Error",
           text: "Todos los campos son obligatorios",
         });
-        return
+        return;
       }
 
       if (form.fecha_inicio.value > form.fecha_fin.value) {
@@ -112,20 +164,67 @@ export default {
         return;
       }
 
-      const formData = new FormData(form);
-      const tarea = Object.fromEntries(formData.entries());
-      crearTarea(tarea).then(
-          (tarea) => {
-            console.log(tarea.data);
-            this.tareas.push(tarea.data);
-            this.actualizarPaginacion();
-            this.ocultarModalCrearTarea();
-          },
-          (error) => {
-            console.error("Error al crear la tarea:", error);
-          }
-      )
+      const formData = {...this.tareaForm};
 
+      try {
+        if (this.esEdicion) {
+          Swal.fire({
+            title: "¿Estás seguro?",
+            text: "¿Quieres actualizar la tarea?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Sí, actualizar",
+            cancelButtonText: "Cancelar",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              editarTarea(formData).then(
+                  (tarea) => {
+                    const index = this.tareas.findIndex(t => t.id === tarea.data.id);
+                    if (index !== -1) {
+                      this.tareas[index] = tarea.data;
+                    }
+                    this.actualizarPaginacion();
+                    this.mostrarOcultarModal(); // Cerrar el modal
+                  },
+                  (error) => {
+                    console.error("Error al procesar la tarea:", error);
+                    Swal.fire({
+                      icon: "error",
+                      title: "Error",
+                      text: "Hubo un problema al procesar la tarea.",
+                    });
+                  }
+              )
+            }
+          })
+        } else {
+          // Crear tarea
+          crearTarea(formData).then(
+              (tarea) => {
+                this.tareas.push(tarea.data);
+                this.actualizarPaginacion();
+                this.mostrarOcultarModal(); // Cerrar el modal
+              },
+              (error) => {
+                console.error("Error al procesar la tarea:", error);
+                Swal.fire({
+                  icon: "error",
+                  title: "Error",
+                  text: "Hubo un problema al procesar la tarea.",
+                });
+              }
+          )
+        }
+      } catch (error) {
+        console.error("Error al procesar la tarea:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo un problema al procesar la tarea.",
+        });
+      }
     }
 
   },
@@ -162,8 +261,8 @@ export default {
           <span>{{ tarea.nombre }}</span>
           <div class="acciones">
             <router-link :to="`/tarea/${tarea.id}`" class="btn">Ver</router-link>
-            <button v-if="userStore().user.id === tarea.user_id" @click="completarTarea(tarea.id)" class="btn">
-              {{ tarea.completada ? "Reabrir" : "Completar" }}
+            <button v-if="userStore().user.id === tarea.user_id" @click="edicionTarea(tarea.id)" class="btn">
+              Editar
             </button>
             <button v-if="userStore().user.id === tarea.user_id" @click="eliminarTarea(tarea.id)" class="btn eliminar">
               Eliminar
@@ -193,7 +292,7 @@ export default {
       🗑️ Arrastra aquí para eliminar
     </div>
 
-    <button v-if="userStore().user.id === id" @click="mostrarModalCrearTarea" class="btn-crear">Crear Tarea</button>
+    <button v-if="userStore().user.id === id" @click="mostrarOcultarModal()" class="btn-crear">Crear Tarea</button>
 
   </div>
 
@@ -209,26 +308,39 @@ export default {
    -->
   <div class="contenedor-modal-crear-tarea">
     <form class="modal-crear-tarea" @submit.prevent="enviarFormularioTarea">
-      <h2>Crear Tarea</h2>
+      <h2>{{ esEdicion ? 'Editar Tarea' : 'Crear Tarea' }}</h2>
+
+      <!-- Nombre -->
       <label for="nombre">Nombre:</label>
-      <input type="text" id="nombre" name="nombre" required>
+      <input type="text" id="nombre" name="nombre" v-model="tareaForm.nombre" required>
+
+      <!-- Descripción -->
       <label for="descripcion">Descripción:</label>
-      <textarea id="descripcion" name="descripcion" required></textarea>
+      <textarea id="descripcion" name="descripcion" v-model="tareaForm.descripcion" required></textarea>
+
+      <!-- Fechas -->
       <label for="fecha_inicio">Fecha de inicio:</label>
-      <input type="date" id="fecha_inicio" name="fecha_inicio" required>
+      <input type="date" id="fecha_inicio" name="fecha_inicio" v-model="tareaForm.fecha_inicio" required>
+
       <label for="fecha_fin">Fecha de fin:</label>
-      <input type="date" id="fecha_fin" name="fecha_fin" required>
+      <input type="date" id="fecha_fin" name="fecha_fin" v-model="tareaForm.fecha_fin" required>
+
+      <!-- Estado -->
       <label for="estado">Estado:</label>
-      <select id="estado" name="estado" required>
+      <select id="estado" name="estado" v-model="tareaForm.estado" required>
         <option value="pendiente">Pendiente</option>
         <option value="en_proceso">En Proceso</option>
-        <option value="completada">Completada</option>
+        <option value="terminada">Terminada</option>
       </select>
+
       <input type="number" id="user_id" name="user_id" hidden>
-      <button type="submit">Crear</button>
-      <button type="reset" @click="ocultarModalCrearTarea">Cancelar</button>
+
+      <!-- Botones -->
+      <button type="submit">{{ esEdicion ? 'Actualizar' : 'Crear' }}</button>
+      <button type="reset" @click="mostrarOcultarModal">Cancelar</button>
     </form>
   </div>
+
 
 </template>
 
