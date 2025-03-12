@@ -29,18 +29,18 @@ const userStore = defineStore("userStore", {
         },
 
         logout() {
-            logoutAuth().then(
-                () => {
+            //logoutAuth().then(
+            //    () => {
                     this.isLoggedIn = false
                     this.user = usuarioVacio
                     this.access_token = null
                     localStorage.removeItem("userStore")
-                }
-            ).catch(
-                (error) => {
-                    console.error("Logout failed: ", error)
-                }
-            )
+           //     }
+           // ).catch(
+           //     (error) => {
+            //        console.error("Logout failed: ", error)
+            //    }
+           // )
         },
 
         checkTokenValidity() {
