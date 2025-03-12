@@ -10,6 +10,7 @@ import configStore from "@/stores/configStore.js";
 const pinia = createPinia()
 const userstore = userStore(pinia);
 const confistore = configStore(pinia);
+
 userstore.checkTokenValidity();
 confistore.loadData();
 
