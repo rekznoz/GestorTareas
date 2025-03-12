@@ -13,3 +13,19 @@
     --color-resaltado-oscuro: #FFA500;
 
 }
+
+.darkMode {
+
+    --color-fondo-principal: #000000;
+    --color-fondo-secundario: #1A1A1A;
+    --color-fondo-terciario: #2A2A2A;
+    --color-fondo-cuaternario: #3A3A3A;
+
+    --color-texto-principal: #FFFFFF;
+    --color-texto-secundario: #C4C4C4;
+    --color-texto-terciario: #A0A0A0;
+
+    --color-resaltado: #FFD700;
+    --color-resaltado-oscuro: #FFA500;
+
+}
