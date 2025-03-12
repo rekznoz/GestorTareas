@@ -1,20 +1,22 @@
 <script>
+import Seccion from "@/components/Seccion.vue";
+
 export default {
-  name: "Inicio"
+  name: "Inicio",
+  components: {Seccion}
 }
 </script>
 
 <template>
-
   <div class="container">
 
-    <section class="descripcion">
-      <h2>¿Qué es TareasEverywhere?</h2>
-      <p>TareasEverywhere es una aplicación web diseñada para ayudarte a organizar y priorizar tus tareas diarias. Olvídate
-        del
-        caos y di hola a la productividad, ¡porque hasta tus pendientes merecen un poco de orden!</p>
-      <a href="#caracteristicas" class="btn">Descubre sus funcionalidades</a>
-    </section>
+    <Seccion
+        titulo="¿Qué es TareasEverywhere?"
+        texto="TareasEverywhere es una aplicación web diseñada para ayudarte a organizar y priorizar tus tareas diarias. Olvídate del caos y di hola a la productividad, ¡porque hasta tus pendientes merecen un poco de orden!"
+        enlaceTexto="Descubre sus funcionalidades"
+        enlaceHref="#caracteristicas"
+        bgColor="#f8f9fa"
+    />
 
     <section id="caracteristicas">
       <h2>Características Destacadas</h2>
@@ -50,56 +52,23 @@ export default {
       </div>
     </section>
 
-    <section class="motivacion">
-      <h2>¿Listo para transformar tu rutina?</h2>
-      <p>Únete a cientos de usuarios que ya han dado el salto hacia una organización más eficiente. ¡Que tus tareas sean
-        el combustible de tu éxito!</p>
-      <a href="#contacto" class="btn">Empezar ahora</a>
-    </section>
-
+    <Seccion
+        titulo="¿Listo para transformar tu rutina?"
+        texto="Únete a cientos de usuarios que ya han dado el salto hacia una organización más eficiente. ¡Que tus tareas sean el combustible de tu éxito!"
+        enlaceTexto="Empezar ahora"
+        enlaceHref="#contacto"
+        bgColor="#e3f2fd"
+    />
   </div>
 
 </template>
 
 <style scoped>
+
 .container {
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 25px auto;
   padding: 0 20px;
-}
-
-/* Descripción */
-
-.descripcion {
-  text-align: center;
-  margin-top: 50px;
-  background-color: #f8f9fa;
-  padding: 50px 20px;
-  border-radius: 10px;
-  margin-bottom: 40px;
-}
-
-.descripcion h2 {
-  font-size: 2.5rem;
-  margin-bottom: 20px;
-}
-
-.descripcion p {
-  font-size: 1.2rem;
-  margin-bottom: 40px;
-}
-
-.descripcion .btn {
-  display: inline-block;
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
-  text-decoration: none;
-  border-radius: 5px;
-}
-
-.descripcion .btn:hover {
-  background-color: #0056b3;
 }
 
 /* Características */
@@ -139,38 +108,6 @@ export default {
 
 .caracteristica p {
   font-size: 1rem;
-}
-
-/* Motivación */
-
-.motivacion {
-  text-align: center;
-  background-color: #f8f9fa;
-  padding: 50px 20px;
-  border-radius: 10px;
-}
-
-.motivacion h2 {
-  font-size: 2.5rem;
-  margin-bottom: 20px;
-}
-
-.motivacion p {
-  font-size: 1.2rem;
-  margin-bottom: 40px;
-}
-
-.motivacion .btn {
-  display: inline-block;
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
-  text-decoration: none;
-  border-radius: 5px;
-}
-
-.motivacion .btn:hover {
-  background-color: #0056b3;
 }
 
 </style>
