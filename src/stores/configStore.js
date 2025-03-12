@@ -16,6 +16,9 @@ const configStore = defineStore("configStore", {
             this.darkMode = value;
             console.log(value);  // Lo mismo aquí, si es útil para la depuración
             localStorage.setItem("darkMode", JSON.stringify(this.darkMode));
+            // Aquí puedes agregar el código para cambiar el tema de tu aplicación
+            // agregar/quitar la clase darkMode al body
+            document.body.classList.toggle("darkMode", this.darkMode);
         },
         loadData() {
             const storedDragAndDrop = JSON.parse(localStorage.getItem("dragAndDrop"));
@@ -26,6 +29,7 @@ const configStore = defineStore("configStore", {
             const storedDarkMode = JSON.parse(localStorage.getItem("darkMode"));
             if (storedDarkMode !== null) {
                 this.darkMode = storedDarkMode;
+                document.body.classList.toggle("darkMode", this.darkMode);
             }
         }
     },
