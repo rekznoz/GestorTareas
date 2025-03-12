@@ -1,9 +1,16 @@
 <script>
 import userStore from "@/stores/userStore.js";
+import router from "@/router/router.js";
 
 export default {
   name: "Header",
-  methods: {userStore},
+  methods: {
+    userStore,
+    clickLogout() {
+      userStore().logout();
+      router.push("/");
+    },
+  },
 }
 </script>
 
@@ -16,7 +23,7 @@ export default {
           <router-link to="/contacto" class="nav-link">Contacto</router-link>
           <router-link v-if="userStore().isLoggedIn" :to="`/tareas/${userStore().user.id}`" class="nav-link">Tareas</router-link>
           <router-link v-if="userStore().isLoggedIn" :to="`/perfil/${userStore().user.id}`" class="nav-link">Perfil</router-link>
-          <button v-if="userStore().isLoggedIn" @click="userStore().logout" class="nav-link">Logout</button>
+          <button v-if="userStore().isLoggedIn" @click="clickLogout" class="nav-link">Logout</button>
           <router-link v-else to="/login" class="nav-link">Login</router-link>
         </li>
       </ul>
@@ -78,6 +85,15 @@ export default {
 
 .nav-link:hover {
   color: var(--color-resaltado-oscuro);
+}
+
+button {
+  background: none;
+  border: none;
+  color: var(--color-texto-principal);
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
 }
 
 @media (max-width: 768px) {
