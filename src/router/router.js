@@ -1,12 +1,13 @@
 import {createRouter, createWebHistory} from 'vue-router';
 
-import Nosotros from "@/pages/Inicio.vue";
+import Inicio from "@/pages/Inicio.vue";
+import {usuarioLogueado, usuarioNoLogueado} from "@/router/usuarioLogueado.js";
 
 const routes = [
     {
         path: '/',
-        component: Nosotros,
-        name: 'nosotros'
+        component: Inicio,
+        name: 'inicio'
     },
     {
         path: '/tareas/:id',
@@ -24,7 +25,8 @@ const routes = [
         props: (route) => {
             const id = Number(route.params.id);
             return {id};
-        }
+        },
+        beforeEnter: usuarioLogueado,
     },
     {
         path: '/tarea/:id',
@@ -43,12 +45,14 @@ const routes = [
     {
         path: '/login',
         component: () => import('@/pages/Login.vue'),
-        name: 'login'
+        name: 'login',
+        beforeEnter: usuarioNoLogueado
     },
     {
         path: '/registro',
         component: () => import('@/pages/Registro.vue'),
-        name: 'registro'
+        name: 'registro',
+        beforeEnter: usuarioNoLogueado
     },
     {
         path: '/:pathMatch(.*)*', // 404 Not Found
