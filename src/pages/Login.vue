@@ -16,6 +16,10 @@ export default {
     ...mapState(userStore, ["user", "isLoggedIn"]),
   },
   methods: {
+
+    /**
+     * Método para iniciar sesión
+     */
     login() {
       if (!this.email || !this.password) {
         alert("Por favor, completa todos los campos.");
