@@ -1,5 +1,8 @@
-// http://127.0.0.1:8000/api/v1/tareas
-
+/**
+ * Obtiene las tareas de un usuario
+ * @param id
+ * @returns {Promise<*>}
+ */
 export const getTareasUsuario = async (id) => {
     if (!id) throw new Error("El ID de usuario es requerido");
 
