@@ -1,5 +1,10 @@
 import userStore from "@/stores/userStore.js";
 
+/**
+ * Elimina una tarea en la base de datos con el id
+ * @param id
+ * @returns {Promise<any|null>}
+ */
 export const eliminarTarea = async (id) => {
     try {
         const token = userStore().access_token;
