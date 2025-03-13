@@ -6,6 +6,10 @@ export default {
   name: "Header",
   methods: {
     userStore,
+
+    /**
+     * Método para cerrar sesión
+     */
     clickLogout() {
       userStore().logout();
       router.push("/");
