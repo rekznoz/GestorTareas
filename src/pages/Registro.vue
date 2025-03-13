@@ -22,6 +22,10 @@ export default {
     ...mapState(userStore, ["user", "isLoggedIn"]),
   },
   methods: {
+
+    /**
+     * Registra un usuario en la base de datos.
+     */
     async registrar() {
 
       if (!this.nombre || !this.email || !this.password || !this.password_confirmation) {
