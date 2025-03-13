@@ -85,24 +85,7 @@ export default {
   }
 
 }
-/*
-{
-    "id": 1,
-    "nombre": "Voluptas aut alias.",
-    "descripcion": "Neque sequi totam ut delectus similique quaerat. Sapiente dolore ea nihil. Quidem sit voluptas dolore neque. Doloribus ipsam vitae voluptas enim maxime necessitatibus temporibus.",
-    "fecha_inicio": "2013-01-12",
-    "fecha_fin": "1975-07-07",
-    "estado": "en_proceso",
-    "user": {
-        "id": 2,
-        "name": "Carlos Portillo",
-        "email": "alejandro02@example.net",
-        "email_verified_at": "2025-03-08T12:53:56.000000Z",
-        "created_at": "2025-03-08T12:53:56.000000Z",
-        "updated_at": "2025-03-08T12:53:56.000000Z"
-    }
-}
- */
+
 </script>
 
 <template>
@@ -127,7 +110,7 @@ export default {
       <h3>📝 Comentarios</h3>
       <ul>
         <li v-for="comentario in comentariosPagina" :key="comentario.id">
-          <p><strong>{{ comentario.usuario }}</strong>: {{ comentario.comentario }}</p>
+          <p><strong>{{ comentario.user.name }}</strong>: {{ comentario.comentario }}</p>
         </li>
       </ul>
 
