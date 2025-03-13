@@ -1,22 +1,25 @@
+import userStore from "@/stores/userStore.js";
 
 const crearComentario = async (comentario) => {
     if (!comentario) throw new Error("El comentario es requerido");
 
-    const res = await fetch(`${import.meta.env.VITE_API_URL_COMENTARIOS}`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(comentario),
-    });
+    try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL_COMENTARIOS}`, {
+            method: "POST",
+            headers: {
+                'Content-Type': "application/json",
+                'Authorization': `Bearer ${userStore().access_token}`
+            },
+            body: JSON.stringify(comentario),
+        });
 
-    const respuesta = await res.json();
+        const respuesta = await res.json();
+        return respuesta.data;
 
-    if (respuesta.status !== "success") {
-        throw new Error(respuesta.message);
+    } catch (error) {
+        console.error("Error al crear comentario:", error);
+        throw new Error(error.message || "Error inesperado en la creación del comentario");
     }
-
-    return respuesta.data;
-}
+};
 
 export default crearComentario;
