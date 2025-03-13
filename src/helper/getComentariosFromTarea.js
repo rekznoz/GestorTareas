@@ -1,4 +1,8 @@
-
+/**
+ * Función que obtiene los comentarios de una tarea
+ * @param id
+ * @returns {Promise<*>}
+ */
 const getComentarioFromTarea = async (id) => {
     if (!id) throw new Error("El ID de tarea es requerido");
 
