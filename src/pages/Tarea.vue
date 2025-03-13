@@ -23,12 +23,14 @@ export default {
       user_id: 0,
     }
   }),
+
   props: {
     id: {
       type: Number,
       required: true,
     },
   },
+  
   methods: {
     userStore,
     async cargarTarea() {
@@ -202,7 +204,9 @@ export default {
       <ul>
         <li v-for="comentario in comentarios" :key="comentario.id">
           <p><strong>{{ comentario.user.name }}</strong>: {{ comentario.comentario }}</p>
-          <button v-if="userStore === usuarioID" @click="borrarComentario(comentario.id)" class="btn-eliminar">Eliminar</button>
+          <button v-if="userStore === usuarioID" @click="borrarComentario(comentario.id)" class="btn-eliminar">
+            Eliminar
+          </button>
         </li>
       </ul>
 
