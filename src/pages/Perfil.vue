@@ -11,21 +11,45 @@ export default {
     },
   },
   computed: {
+
+    /**
+     * Método para obtener el usuario actual
+     * @returns {Object}
+     */
     user() {
       return userStore().user;
     },
+
+    /**
+     * Método para obtener el modo oscuro
+     * @returns {boolean}
+     */
     darkMode() {
       return configStore().darkMode;
     },
+
+    /**
+     * Método para obtener el modo drag and drop
+     * @returns {boolean}
+     */
     dragAndDrop() {
       return configStore().dragAndDrop;
     },
   },
   methods: {
+
+    /**
+     * Método para activar o desactivar el modo oscuro
+     * @param {boolean} value
+     */
     toggleDarkMode(value) {
       configStore().setDarkMode(value);
     },
 
+    /**
+     * Método para activar o desactivar el modo drag and drop
+     * @param {boolean} value
+     */
     toggleDragDrop(value) {
       configStore().setDragAndDrop(value);
     },
