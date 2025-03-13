@@ -4,6 +4,7 @@ import getComentarioFromTarea from "@/helper/getComentariosFromTarea.js";
 import crearComentario from "@/helper/crearComentario.js";
 import Swal from "sweetalert2";
 import eliminarComentario from "@/helper/eliminarComentario.js";
+import userStore from "@/stores/userStore.js";
 
 export default {
   name: "Tarea",
@@ -29,6 +30,7 @@ export default {
     },
   },
   methods: {
+    userStore,
     async cargarTarea() {
       try {
         this.tarea = await getTareaID(this.id);
@@ -189,7 +191,7 @@ export default {
       <router-link :to="`/tareas/${usuarioID}`" class="btn">
         Ver tareas de {{ usuarioNombre }}
       </router-link>
-      <button class="btn" @click="abrirModalCrearComentario">
+      <button v-if="userStore === usuarioID" class="btn" @click="abrirModalCrearComentario">
         📝 Crear comentario
       </button>
     </div>
@@ -200,7 +202,7 @@ export default {
       <ul>
         <li v-for="comentario in comentarios" :key="comentario.id">
           <p><strong>{{ comentario.user.name }}</strong>: {{ comentario.comentario }}</p>
-          <button @click="borrarComentario(comentario.id)" class="btn-eliminar">Eliminar</button>
+          <button v-if="userStore === usuarioID" @click="borrarComentario(comentario.id)" class="btn-eliminar">Eliminar</button>
         </li>
       </ul>
 
