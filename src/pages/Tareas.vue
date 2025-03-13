@@ -46,6 +46,9 @@ export default {
 
     configStore,
 
+    /**
+     * Método para cargar las tareas del usuario
+     */
     edicionTarea(id) {
       const tarea = this.tareas.find(t => t.id === id);
       if (tarea) {
@@ -53,6 +56,9 @@ export default {
       }
     },
 
+    /**
+     * Método para cargar las tareas del usuario
+     */
     async cargarTareas() {
       try {
         this.tareas = await getTareasUsuario(this.id);
@@ -63,20 +69,34 @@ export default {
       }
     },
 
+    /**
+     * Método para iniciar el arrastre de una tarea
+     * @param {number} id
+     */
     dragStart(id) {
       this.tareaArrastrada = id;
     },
 
+    /**
+     * Método para finalizar el arrastre de una tarea
+     */
     dragEnd() {
       this.tareaArrastrada = null;
     },
 
+    /**
+     * Método para manejar el drop de una tarea
+     */
     handleDrop() {
       if (this.tareaArrastrada !== null) {
         this.eliminarTarea(this.tareaArrastrada);
       }
     },
 
+    /**
+     * Método para eliminar una tarea
+     * @param {number} id
+     */
     async eliminarTarea(id) {
       Swal.fire(
           {
@@ -109,10 +129,17 @@ export default {
       )
     },
 
+    /**
+     * Método para actualizar la paginación
+     */
     actualizarPaginacion() {
       this.tareasPaginadas = obtenerPaginacion(this.tareas, this.paginaActual, this.tareasPorPagina);
     },
 
+    /**
+     * Método para cambiar de página
+     * @param {number} nuevaPagina
+     */
     cambiarPagina(nuevaPagina) {
       if (nuevaPagina > 0 && nuevaPagina <= this.totalPaginas) {
         this.paginaActual = nuevaPagina;
@@ -120,6 +147,10 @@ export default {
       }
     },
 
+    /**
+     * Método para mostrar u ocultar el modal de creación de tareas
+     * @param {Object} tarea
+     */
     mostrarOcultarModal(tarea = null) {
       const modal = document.querySelector(".contenedor-modal-crear-tarea");
 
@@ -144,6 +175,9 @@ export default {
       modal.style.display = modal.style.display === "flex" ? "none" : "flex";
     },
 
+    /**
+     * Método para enviar el formulario de la tarea
+     */
     enviarFormularioTarea() {
       const form = document.querySelector(".modal-crear-tarea");
 
@@ -241,6 +275,10 @@ export default {
   },
 
   computed: {
+    /**
+     * Método para obtener el total de páginas
+     * @returns {number}
+     */
     totalPaginas() {
       return Math.ceil(this.tareas.length / this.tareasPorPagina);
     }
