@@ -1,5 +1,9 @@
 import { defineStore } from "pinia";
 
+/**
+ * Store para guardar la configuración de la aplicación
+ * @type {StoreDefinition<"configStore", {dragAndDrop: boolean, darkMode: boolean}, {}, {setDragAndDrop(*): void, setDarkMode(*): void, loadData(): void}>}
+ */
 const configStore = defineStore("configStore", {
     state: () => ({
         dragAndDrop: false,
@@ -7,11 +11,21 @@ const configStore = defineStore("configStore", {
     }),
 
     actions: {
+
+        /**
+         * Cambia el valor de la propiedad dragAndDrop
+         * @param value
+         */
         setDragAndDrop(value) {
             this.dragAndDrop = value;
             console.log(value);  // Puedes dejar este log si es necesario para depuración
             localStorage.setItem("dragAndDrop", JSON.stringify(this.dragAndDrop));
         },
+
+        /**
+         * Cambia el valor de la propiedad darkMode
+         * @param value
+         */
         setDarkMode(value) {
             this.darkMode = value;
             console.log(value);  // Lo mismo aquí, si es útil para la depuración
@@ -20,6 +34,10 @@ const configStore = defineStore("configStore", {
             // agregar/quitar la clase darkMode al body
             document.body.classList.toggle("darkMode", this.darkMode);
         },
+
+        /**
+         * Carga los datos de la configuración desde localStorage
+         */
         loadData() {
             const storedDragAndDrop = JSON.parse(localStorage.getItem("dragAndDrop"));
             if (storedDragAndDrop !== null) {
