@@ -1,15 +1,12 @@
 <script>
-import { getTareaID } from "@/helper/getTareaID.js";
+import {getTareaID} from "@/helper/getTareaID.js";
 import getComentarioFromTarea from "@/helper/getComentariosFromTarea.js";
 import crearComentario from "@/helper/crearComentario.js";
-import Comentarios from "@/components/Comentarios.vue";
 import Swal from "sweetalert2";
+import eliminarComentario from "@/helper/eliminarComentario.js";
 
 export default {
   name: "Tarea",
-  components: {
-    Comentarios,
-  },
   data: () => ({
     tarea: {},
     cargando: true,
@@ -93,7 +90,7 @@ export default {
       this.nuevoComentario.tarea_id = this.id;
       this.nuevoComentario.user_id = this.usuarioID;
 
-      const formData = { ...this.nuevoComentario };
+      const formData = {...this.nuevoComentario};
 
       crearComentario(formData)
           .then((respuesta) => {
@@ -117,12 +114,31 @@ export default {
           });
     },
 
-    actualizarComentarios(nuevosComentarios) {
-      this.cambiarPagina(1);
-      this.comentarios = nuevosComentarios;
-      this.totalComentarios = this.comentarios.length;
-      this.cargarComentariosPagina();
-    },
+    borrarComentario(id) {
+      Swal.fire({
+        title: "¿Estás seguro?",
+        text: "Una vez eliminado, no se podrá recuperar el comentario.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#007bff",
+        cancelButtonColor: "#dc3545",
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            await eliminarComentario(id).then(() => {
+              Swal.fire("Eliminado", "El comentario ha sido eliminado.", "success");
+              this.comentarios = this.comentarios.filter((comentario) => comentario.id !== id)
+              this.$emit("cambiarPagina", this.paginaActual);
+            });
+          } catch (error) {
+            console.error(error);
+            Swal.fire("Error", "No se pudo eliminar el comentario.", "error");
+          }
+        }
+      });
+    }
   },
 
   watch: {
@@ -179,13 +195,28 @@ export default {
     </div>
 
     <!-- Lista de comentarios -->
-    <Comentarios
-        :comentarios="comentariosPagina"
-        :paginaActual="paginaActual"
-        :totalPaginas="totalPaginas"
-        @actualizarComentarios="actualizarComentarios"
-        @cambiarPagina="cambiarPagina"
-    />
+    <section v-if="comentarios.length > 0" class="comentarios">
+      <h3>📝 Comentarios</h3>
+      <ul>
+        <li v-for="comentario in comentarios" :key="comentario.id">
+          <p><strong>{{ comentario.user.name }}</strong>: {{ comentario.comentario }}</p>
+          <button @click="borrarComentario(comentario.id)" class="btn-eliminar">Eliminar</button>
+        </li>
+      </ul>
+
+      <!-- Paginación -->
+      <div class="paginacion">
+        <button @click="$emit('cambiarPagina', paginaActual - 1)" :disabled="paginaActual <= 1">
+          Anterior
+        </button>
+        <span>Página {{ paginaActual }} de {{ totalPaginas }}</span>
+        <button @click="$emit('cambiarPagina', paginaActual + 1)" :disabled="paginaActual >= totalPaginas">
+          Siguiente
+        </button>
+      </div>
+    </section>
+
+    <p v-else class="no-comentarios">No hay comentarios aún.</p>
 
     <!-- Modal para crear comentario -->
     <div v-if="mostrarModal" class="modal-overlay" @click="cerrarModal">
@@ -346,6 +377,76 @@ button {
 
 .modal-actions button:hover {
   opacity: 0.8;
+}
+
+/* Estilos de la lista de comentarios */
+
+.comentarios {
+  margin-top: 20px;
+  padding: 15px;
+  background: #f3f3f3;
+  border-radius: 8px;
+  color: #333;
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.comentarios h3 {
+  color: #007bff;
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+}
+
+.comentarios ul {
+  list-style: none;
+  padding: 0;
+}
+
+.comentarios li {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+
+}
+
+.no-comentarios {
+  text-align: center;
+  font-style: italic;
+  color: #888;
+}
+
+.paginacion {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.paginacion button {
+  padding: 8px 16px;
+  margin: 0 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.paginacion button:disabled {
+  background-color: #ccc;
+}
+
+.paginacion span {
+  font-size: 1.2rem;
+}
+
+.btn-eliminar {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
 }
 
 </style>
