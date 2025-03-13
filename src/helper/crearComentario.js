@@ -1,5 +1,10 @@
 import userStore from "@/stores/userStore.js";
 
+/**
+ * Crea un comentario en la base de datos con el objeto comentario
+ * @param comentario
+ * @returns {Promise<*>}
+ */
 const crearComentario = async (comentario) => {
     if (!comentario) throw new Error("El comentario es requerido");
 
