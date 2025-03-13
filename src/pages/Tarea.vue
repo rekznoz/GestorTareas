@@ -1,12 +1,14 @@
 <script>
 import {getTareaID} from "@/helper/getTareaID.js";
 import getComentarioFromTarea from "@/helper/getComentariosFromTarea.js";
-import Comentarios from "@/components/Comentarios.vue";  // Importamos el nuevo componente
+import Comentarios from "@/components/Comentarios.vue";
+import ModalComentario from "@/components/ModalComentario.vue"; // Importamos el modal
 
 export default {
   name: "Tarea",
   components: {
-    Comentarios
+    Comentarios,
+    ModalComentario, // Registramos el modal
   },
   data: () => ({
     tarea: {},
@@ -15,22 +17,25 @@ export default {
     comentariosPagina: [],
     paginaActual: 1,
     comentariosPorPagina: 5,
-    totalComentarios: 0
+    totalComentarios: 0,
+    modalAbierto: false, // Estado para abrir/cerrar el modal
   }),
   props: {
     id: {
       type: Number,
-      required: true
-    }
+      required: true,
+    },
   },
   methods: {
     async cargarTarea() {
       try {
         this.tarea = await getTareaID(this.id);
         this.cargando = false;
-        this.cargarComentarios();
+        if (this.tarea && this.tarea.id) {
+          await this.cargarComentarios();
+        }
       } catch (error) {
-        console.error(error);
+        console.error("Error al cargar la tarea:", error);
       }
     },
 
@@ -46,22 +51,37 @@ export default {
 
     cargarComentariosPagina() {
       const inicio = (this.paginaActual - 1) * this.comentariosPorPagina;
-      const fin = this.paginaActual * this.comentariosPorPagina;
+      const fin = Math.min(this.paginaActual * this.comentariosPorPagina, this.comentarios.length);
       this.comentariosPagina = this.comentarios.slice(inicio, fin);
     },
 
     cambiarPagina(pagina) {
-      if (pagina > 0 && pagina <= this.totalPaginas) {
+      if (pagina > 0 && pagina <= Math.max(1, this.totalPaginas)) {
         this.paginaActual = pagina;
         this.cargarComentariosPagina();
       }
+    },
+
+    abrirModal() {
+      this.modalAbierto = true;
+    },
+
+    cerrarModal() {
+      this.modalAbierto = false;
+    },
+
+    agregarComentario(comentario) {
+      this.comentarios.unshift(comentario);
+      this.totalComentarios++;
+      this.cargarComentariosPagina();
+      this.cerrarModal();
     }
   },
 
   watch: {
     id() {
       this.cargarTarea();
-    }
+    },
   },
 
   mounted() {
@@ -70,15 +90,15 @@ export default {
 
   computed: {
     usuarioNombre() {
-      return this.tarea.user ? this.tarea.user.name : 'Desconocido';
+      return this.tarea.user ? this.tarea.user.name : "Desconocido";
     },
     usuarioID() {
-      return this.tarea.user ? this.tarea.user.id : 'Desconocido';
+      return this.tarea.user?.id ?? null;
     },
     totalPaginas() {
       return Math.max(1, Math.ceil(this.totalComentarios / this.comentariosPorPagina));
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -90,22 +110,25 @@ export default {
 
     <section v-else-if="tarea" class="descripcion">
       <h2>{{ tarea.nombre }}</h2>
-      <p>{{ tarea.descripcion }}</p>
+      <p v-if="tarea.descripcion">{{ tarea.descripcion }}</p>
       <p><strong>📅 Fecha de inicio:</strong> {{ tarea.fecha_inicio }}</p>
       <p><strong>⏳ Fecha de fin:</strong> {{ tarea.fecha_fin }}</p>
       <p><strong>✅ Estado:</strong> {{ tarea.estado }}</p>
-      <p><strong>👤 Usuario:</strong> {{ tarea.user ? tarea.user.name : 'Desconocido' }}</p>
+      <p><strong>👤 Usuario:</strong> {{ usuarioNombre }}</p>
     </section>
 
     <section v-else class="descripcion">
       <h2>No se encontró la tarea</h2>
     </section>
 
-    <router-link :to="`/tareas/${usuarioID}`" class="btn">
+    <router-link v-if="usuarioID" :to="`/tareas/${usuarioID}`" class="btn">
       Ver tareas de {{ usuarioNombre }}
     </router-link>
 
-    <!-- Nuevo componente de Comentarios -->
+    <!-- Botón para abrir el modal -->
+    <button @click="abrirModal" class="btn btn-agregar">➕ Agregar Comentario</button>
+
+    <!-- Componente de Comentarios -->
     <Comentarios
         :comentarios="comentariosPagina"
         :paginaActual="paginaActual"
@@ -113,6 +136,8 @@ export default {
         @cambiarPagina="cambiarPagina"
     />
 
+    <!-- Modal para agregar comentario -->
+    <ModalComentario v-if="modalAbierto" @cerrar="cerrarModal" @guardar="agregarComentario"/>
   </div>
 </template>
 
@@ -175,6 +200,20 @@ export default {
 
 .btn:hover {
   background-color: #0056b3;
+}
+
+.btn-agregar {
+  margin-top: 10px;
+  padding: 10px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-agregar:hover {
+  background: #218838;
 }
 
 </style>
