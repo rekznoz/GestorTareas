@@ -1,5 +1,10 @@
 import userStore from "@/stores/userStore.js";
 
+/**
+ * Crea una tarea en la base de datos con el objeto tarea
+ * @param tarea
+ * @returns {Promise<any>}
+ */
 export const crearTarea = async (tarea) => {
     try {
         tarea.user_id = userStore().user.id
