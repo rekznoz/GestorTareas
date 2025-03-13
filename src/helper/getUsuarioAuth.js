@@ -1,23 +1,12 @@
-// http://127.0.0.1:8000/api/v1/auth/login
+
 import userStore from "@/stores/userStore.js";
 
-/*
-
-{
-	"access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL3YxL2F1dGgvbG9naW4iLCJpYXQiOjE3NDE0NDE2ODUsImV4cCI6MTc0MTQ0NTI4NSwibmJmIjoxNzQxNDQxNjg1LCJqdGkiOiJrZHJ4bzQ3OEtmdkE5Z0M4Iiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ._T9LJjD3Eh9S0XL08sXJji20f7uQVnK1B0J8PA6By8w",
-	"token_type": "bearer",
-	"expires_in": 3600,
-	"user": {
-		"id": 1,
-		"name": "Admin",
-		"email": "admin@admin.com",
-		"roles": [],
-		"permissions": []
-	}
-}
-
-*/
-
+/**
+ * Obtiene un usuario autenticado con el email y password
+ * @param email
+ * @param password
+ * @returns {Promise<any>}
+ */
 export const getUsuarioAuth = async (email, password) => {
     if (!email || !password) throw new Error("El email y password son requeridos");
 
@@ -33,6 +22,14 @@ export const getUsuarioAuth = async (email, password) => {
 
 };
 
+/**
+ * Registra un usuario con el nombre, email, password y password_confirmation
+ * @param name
+ * @param email
+ * @param password
+ * @param password_confirmation
+ * @returns {Promise<any>}
+ */
 export const registerUsuarioAuth = async (name, email, password, password_confirmation) => {
 
     console.log({ name, email, password, password_confirmation });
@@ -66,7 +63,10 @@ export const registerUsuarioAuth = async (name, email, password, password_confir
     }
 };
 
-
+/**
+ * Cierra la sesión de un usuario autenticado
+ * @returns {Promise<void>}
+ */
 export const logoutAuth = async () => {
     try {
         const token = userStore().access_token;
@@ -96,6 +96,11 @@ export const logoutAuth = async () => {
     }
 };
 
+/**
+ * Actualiza el token de un usuario autenticado
+ * @param access_token
+ * @returns {Promise<void>}
+ */
 export const actualizarToken = async (access_token) => {
     try {
         if (!access_token) {
