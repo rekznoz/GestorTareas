@@ -1,7 +1,7 @@
 <script>
-import {getTareaID} from "@/helper/getTareaID.js";
+import { getTareaID } from "@/helper/getTareaID.js";
 import getComentarioFromTarea from "@/helper/getComentariosFromTarea.js";
-import crearComentario from "@/helper/crearComentario.js"; // Importar la función
+import crearComentario from "@/helper/crearComentario.js";
 import Comentarios from "@/components/Comentarios.vue";
 import Swal from "sweetalert2";
 
@@ -19,7 +19,11 @@ export default {
     comentariosPorPagina: 5,
     totalComentarios: 0,
     mostrarModal: false,
-    nuevoComentario: "",
+    nuevoComentario: {
+      comentario: "",
+      tarea_id: 0,
+      user_id: 0,
+    }
   }),
   props: {
     id: {
@@ -28,7 +32,6 @@ export default {
     },
   },
   methods: {
-
     async cargarTarea() {
       try {
         this.tarea = await getTareaID(this.id);
@@ -68,21 +71,15 @@ export default {
 
     cerrarModal() {
       this.mostrarModal = false;
-      this.nuevoComentario = "";
+      this.nuevoComentario = {
+        comentario: "",
+        tarea_id: 0,
+        user_id: 0,
+      };
     },
 
-    // Función para crear un comentario
     crearComentario() {
       const form = document.querySelector(".modal-form");
-
-      const tarea_id = document.getElementById("tarea_id");
-      tarea_id.value = this.id;
-
-      const user_id = document.getElementById("user_id");
-      user_id.value = this.usuarioID;
-
-      const comentario = document.getElementById("comentario");
-      comentario.value = this.nuevoComentario;
 
       if (!form.checkValidity()) {
         Swal.fire({
@@ -93,28 +90,39 @@ export default {
         return;
       }
 
-      crearComentario(form)
-        .then(() => {
-          this.cargarComentarios();
-          this.cerrarModal();
-          Swal.fire({
-            icon: "success",
-            title: "Comentario creado",
-            showConfirmButton: false,
-            timer: 1500,
-          });
-        })
-        .catch((error) => {
-          console.error(error);
-          Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: "Ocurrió un error al crear el comentario",
-          });
-        });
+      this.nuevoComentario.tarea_id = this.id;
+      this.nuevoComentario.user_id = this.usuarioID;
 
+      const formData = { ...this.nuevoComentario };
+
+      crearComentario(formData)
+          .then((respuesta) => {
+            console.log(respuesta);
+            this.cargarComentarios();
+            this.cerrarModal();
+            Swal.fire({
+              icon: "success",
+              title: "Comentario creado",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          })
+          .catch((error) => {
+            console.error(error);
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: "Ocurrió un error al crear el comentario",
+            });
+          });
     },
 
+    actualizarComentarios(nuevosComentarios) {
+      this.cambiarPagina(1);
+      this.comentarios = nuevosComentarios;
+      this.totalComentarios = this.comentarios.length;
+      this.cargarComentariosPagina();
+    },
   },
 
   watch: {
@@ -175,6 +183,7 @@ export default {
         :comentarios="comentariosPagina"
         :paginaActual="paginaActual"
         :totalPaginas="totalPaginas"
+        @actualizarComentarios="actualizarComentarios"
         @cambiarPagina="cambiarPagina"
     />
 
@@ -185,7 +194,7 @@ export default {
         <form @submit.prevent="crearComentario" class="modal-form">
           <div>
             <textarea
-                v-model="nuevoComentario"
+                v-model="nuevoComentario.comentario"
                 id="comentario"
                 rows="4"
                 required
