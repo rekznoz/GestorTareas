@@ -1,14 +1,13 @@
 <script>
 import {getTareaID} from "@/helper/getTareaID.js";
 import getComentarioFromTarea from "@/helper/getComentariosFromTarea.js";
+import crearComentario from "@/helper/crearComentario.js"; // Importar la función
 import Comentarios from "@/components/Comentarios.vue";
-import ModalComentario from "@/components/ModalComentario.vue"; // Importamos el modal
 
 export default {
   name: "Tarea",
   components: {
     Comentarios,
-    ModalComentario, // Registramos el modal
   },
   data: () => ({
     tarea: {},
@@ -18,7 +17,8 @@ export default {
     paginaActual: 1,
     comentariosPorPagina: 5,
     totalComentarios: 0,
-    modalAbierto: false, // Estado para abrir/cerrar el modal
+    modalAbierto: false, // Controla la visibilidad del modal
+    nuevoComentario: "", // Guarda el texto del comentario
   }),
   props: {
     id: {
@@ -31,11 +31,9 @@ export default {
       try {
         this.tarea = await getTareaID(this.id);
         this.cargando = false;
-        if (this.tarea && this.tarea.id) {
-          await this.cargarComentarios();
-        }
+        this.cargarComentarios();
       } catch (error) {
-        console.error("Error al cargar la tarea:", error);
+        console.error(error);
       }
     },
 
@@ -51,12 +49,12 @@ export default {
 
     cargarComentariosPagina() {
       const inicio = (this.paginaActual - 1) * this.comentariosPorPagina;
-      const fin = Math.min(this.paginaActual * this.comentariosPorPagina, this.comentarios.length);
+      const fin = this.paginaActual * this.comentariosPorPagina;
       this.comentariosPagina = this.comentarios.slice(inicio, fin);
     },
 
     cambiarPagina(pagina) {
-      if (pagina > 0 && pagina <= Math.max(1, this.totalPaginas)) {
+      if (pagina > 0 && pagina <= this.totalPaginas) {
         this.paginaActual = pagina;
         this.cargarComentariosPagina();
       }
@@ -68,14 +66,28 @@ export default {
 
     cerrarModal() {
       this.modalAbierto = false;
+      this.nuevoComentario = ""; // Limpiar el input
     },
 
-    agregarComentario(comentario) {
-      this.comentarios.unshift(comentario);
-      this.totalComentarios++;
-      this.cargarComentariosPagina();
-      this.cerrarModal();
-    }
+    async enviarComentario() {
+      if (!this.nuevoComentario.trim()) {
+        alert("El comentario no puede estar vacío");
+        return;
+      }
+
+      try {
+        await crearComentario({
+          tarea_id: this.id,
+          contenido: this.nuevoComentario,
+        });
+
+        this.cerrarModal();
+        this.cargarComentarios(); // Recargar los comentarios
+      } catch (error) {
+        console.error(error);
+        alert("Error al enviar el comentario");
+      }
+    },
   },
 
   watch: {
@@ -93,7 +105,7 @@ export default {
       return this.tarea.user ? this.tarea.user.name : "Desconocido";
     },
     usuarioID() {
-      return this.tarea.user?.id ?? null;
+      return this.tarea.user ? this.tarea.user.id : "Desconocido";
     },
     totalPaginas() {
       return Math.max(1, Math.ceil(this.totalComentarios / this.comentariosPorPagina));
@@ -110,34 +122,45 @@ export default {
 
     <section v-else-if="tarea" class="descripcion">
       <h2>{{ tarea.nombre }}</h2>
-      <p v-if="tarea.descripcion">{{ tarea.descripcion }}</p>
+      <p>{{ tarea.descripcion }}</p>
       <p><strong>📅 Fecha de inicio:</strong> {{ tarea.fecha_inicio }}</p>
       <p><strong>⏳ Fecha de fin:</strong> {{ tarea.fecha_fin }}</p>
       <p><strong>✅ Estado:</strong> {{ tarea.estado }}</p>
-      <p><strong>👤 Usuario:</strong> {{ usuarioNombre }}</p>
+      <p><strong>👤 Usuario:</strong> {{ tarea.user ? tarea.user.name : "Desconocido" }}</p>
     </section>
 
     <section v-else class="descripcion">
       <h2>No se encontró la tarea</h2>
     </section>
 
-    <router-link v-if="usuarioID" :to="`/tareas/${usuarioID}`" class="btn">
+    <router-link :to="`/tareas/${usuarioID}`" class="btn">
       Ver tareas de {{ usuarioNombre }}
     </router-link>
 
     <!-- Botón para abrir el modal -->
-    <button @click="abrirModal" class="btn btn-agregar">➕ Agregar Comentario</button>
+    <button @click="abrirModal" class="btn btn-primario">
+      ➕ Agregar Comentario
+    </button>
 
-    <!-- Componente de Comentarios -->
+    <!-- Modal de comentario -->
+    <div v-if="modalAbierto" class="modal">
+      <div class="modal-contenido">
+        <h3>Nuevo Comentario</h3>
+        <textarea v-model="nuevoComentario" placeholder="Escribe tu comentario aquí..." class="textarea"></textarea>
+        <div class="modal-acciones">
+          <button @click="cerrarModal" class="btn btn-secundario">Cancelar</button>
+          <button @click="enviarComentario" class="btn btn-primario">Enviar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lista de comentarios -->
     <Comentarios
         :comentarios="comentariosPagina"
         :paginaActual="paginaActual"
         :totalPaginas="totalPaginas"
         @cambiarPagina="cambiarPagina"
     />
-
-    <!-- Modal para agregar comentario -->
-    <ModalComentario v-if="modalAbierto" @cerrar="cerrarModal" @guardar="agregarComentario"/>
   </div>
 </template>
 
@@ -202,18 +225,53 @@ export default {
   background-color: #0056b3;
 }
 
-.btn-agregar {
+/* Estilos del modal */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-contenido {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  min-width: 300px;
+  text-align: center;
+}
+
+.textarea {
+  width: 100%;
+  height: 80px;
   margin-top: 10px;
-  padding: 10px;
-  background: #28a745;
-  color: white;
+}
+
+.modal-acciones {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.btn {
+  padding: 8px 12px;
   border: none;
-  border-radius: 5px;
   cursor: pointer;
 }
 
-.btn-agregar:hover {
-  background: #218838;
+.btn-primario {
+  background: #007bff;
+  color: white;
+}
+
+.btn-secundario {
+  background: #ccc;
+  color: black;
 }
 
 </style>
