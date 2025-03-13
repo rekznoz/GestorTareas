@@ -30,9 +30,13 @@ export default {
       required: true,
     },
   },
-  
+
   methods: {
     userStore,
+
+    /**
+     * Carga la tarea con el ID proporcionado
+     */
     async cargarTarea() {
       try {
         this.tarea = await getTareaID(this.id);
@@ -43,6 +47,9 @@ export default {
       }
     },
 
+    /**
+     * Carga los comentarios de la tarea
+     */
     async cargarComentarios() {
       try {
         this.comentarios = await getComentarioFromTarea(this.id);
@@ -53,12 +60,19 @@ export default {
       }
     },
 
+    /**
+     * Carga los comentarios de la página actual
+     */
     cargarComentariosPagina() {
       const inicio = (this.paginaActual - 1) * this.comentariosPorPagina;
       const fin = this.paginaActual * this.comentariosPorPagina;
       this.comentariosPagina = this.comentarios.slice(inicio, fin);
     },
 
+    /**
+     * Cambia la página de comentarios
+     * @param {number} pagina Número de página
+     */
     cambiarPagina(pagina) {
       if (pagina > 0 && pagina <= this.totalPaginas) {
         this.paginaActual = pagina;
@@ -66,10 +80,16 @@ export default {
       }
     },
 
+    /**
+     * Abre el modal para crear un comentario
+     */
     abrirModalCrearComentario() {
       this.mostrarModal = true;
     },
 
+    /**
+     * Cierra el modal para crear un comentario
+     */
     cerrarModal() {
       this.mostrarModal = false;
       this.nuevoComentario = {
@@ -79,6 +99,9 @@ export default {
       };
     },
 
+    /**
+     * Crea un comentario
+     */
     crearComentario() {
       const form = document.querySelector(".modal-form");
 
@@ -118,6 +141,10 @@ export default {
           });
     },
 
+    /**
+     * Borra un comentario
+     * @param {number} id ID del comentario
+     */
     borrarComentario(id) {
       Swal.fire({
         title: "¿Estás seguro?",
@@ -156,12 +183,26 @@ export default {
   },
 
   computed: {
+    /**
+     * Nombre del usuario de la tarea
+     * @returns {string}
+     */
     usuarioNombre() {
       return this.tarea.user ? this.tarea.user.name : "Desconocido";
     },
+
+    /**
+     * ID del usuario de la tarea
+     * @returns {string}
+     */
     usuarioID() {
       return this.tarea.user ? this.tarea.user.id : "Desconocido";
     },
+
+    /**
+     * Número total de páginas
+     * @returns {number}
+     */
     totalPaginas() {
       return Math.max(1, Math.ceil(this.totalComentarios / this.comentariosPorPagina));
     },
@@ -193,7 +234,7 @@ export default {
       <router-link :to="`/tareas/${usuarioID}`" class="btn">
         Ver tareas de {{ usuarioNombre }}
       </router-link>
-      <button v-if="userStore === usuarioID" class="btn" @click="abrirModalCrearComentario">
+      <button v-if="userStore().user.id === usuarioID" class="btn" @click="abrirModalCrearComentario">
         📝 Crear comentario
       </button>
     </div>
@@ -204,7 +245,7 @@ export default {
       <ul>
         <li v-for="comentario in comentarios" :key="comentario.id">
           <p><strong>{{ comentario.user.name }}</strong>: {{ comentario.comentario }}</p>
-          <button v-if="userStore === usuarioID" @click="borrarComentario(comentario.id)" class="btn-eliminar">
+          <button v-if="userStore().user.id === usuarioID" @click="borrarComentario(comentario.id)" class="btn-eliminar">
             Eliminar
           </button>
         </li>
