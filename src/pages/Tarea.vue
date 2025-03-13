@@ -3,6 +3,7 @@ import {getTareaID} from "@/helper/getTareaID.js";
 import getComentarioFromTarea from "@/helper/getComentariosFromTarea.js";
 import crearComentario from "@/helper/crearComentario.js"; // Importar la función
 import Comentarios from "@/components/Comentarios.vue";
+import Swal from "sweetalert2";
 
 export default {
   name: "Tarea",
@@ -17,6 +18,8 @@ export default {
     paginaActual: 1,
     comentariosPorPagina: 5,
     totalComentarios: 0,
+    mostrarModal: false,
+    nuevoComentario: "",
   }),
   props: {
     id: {
@@ -59,6 +62,59 @@ export default {
       }
     },
 
+    abrirModalCrearComentario() {
+      this.mostrarModal = true;
+    },
+
+    cerrarModal() {
+      this.mostrarModal = false;
+      this.nuevoComentario = "";
+    },
+
+    // Función para crear un comentario
+    crearComentario() {
+      const form = document.querySelector(".modal-form");
+
+      const tarea_id = document.getElementById("tarea_id");
+      tarea_id.value = this.id;
+
+      const user_id = document.getElementById("user_id");
+      user_id.value = this.usuarioID;
+
+      const comentario = document.getElementById("comentario");
+      comentario.value = this.nuevoComentario;
+
+      if (!form.checkValidity()) {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Todos los campos son obligatorios",
+        });
+        return;
+      }
+
+      crearComentario(form)
+        .then(() => {
+          this.cargarComentarios();
+          this.cerrarModal();
+          Swal.fire({
+            icon: "success",
+            title: "Comentario creado",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        })
+        .catch((error) => {
+          console.error(error);
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Ocurrió un error al crear el comentario",
+          });
+        });
+
+    },
+
   },
 
   watch: {
@@ -87,6 +143,7 @@ export default {
 
 <template>
   <div class="container">
+
     <section v-if="cargando" class="descripcion">
       <h2>Cargando...</h2>
     </section>
@@ -97,16 +154,21 @@ export default {
       <p><strong>📅 Fecha de inicio:</strong> {{ tarea.fecha_inicio }}</p>
       <p><strong>⏳ Fecha de fin:</strong> {{ tarea.fecha_fin }}</p>
       <p><strong>✅ Estado:</strong> {{ tarea.estado }}</p>
-      <p><strong>👤 Usuario:</strong> {{ tarea.user ? tarea.user.name : "Desconocido" }}</p>
+      <p><strong>👤 Usuario:</strong> {{ tarea.user?.name || "Desconocido" }}</p>
     </section>
 
     <section v-else class="descripcion">
       <h2>No se encontró la tarea</h2>
     </section>
 
-    <router-link :to="`/tareas/${usuarioID}`" class="btn">
-      Ver tareas de {{ usuarioNombre }}
-    </router-link>
+    <div class="acciones">
+      <router-link :to="`/tareas/${usuarioID}`" class="btn">
+        Ver tareas de {{ usuarioNombre }}
+      </router-link>
+      <button class="btn" @click="abrirModalCrearComentario">
+        📝 Crear comentario
+      </button>
+    </div>
 
     <!-- Lista de comentarios -->
     <Comentarios
@@ -115,6 +177,31 @@ export default {
         :totalPaginas="totalPaginas"
         @cambiarPagina="cambiarPagina"
     />
+
+    <!-- Modal para crear comentario -->
+    <div v-if="mostrarModal" class="modal-overlay" @click="cerrarModal">
+      <div class="modal" @click.stop>
+        <h3>Crear Comentario</h3>
+        <form @submit.prevent="crearComentario" class="modal-form">
+          <div>
+            <textarea
+                v-model="nuevoComentario"
+                id="comentario"
+                rows="4"
+                required
+                placeholder="Escribe tu comentario..."
+            ></textarea>
+          </div>
+          <div class="modal-actions">
+            <button type="button" @click="cerrarModal">Cancelar</button>
+            <button type="submit">Guardar Comentario</button>
+          </div>
+          <input type="number" id="tarea_id" name="tarea_id" hidden>
+          <input type="number" id="user_id" name="user_id" hidden>
+        </form>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -160,6 +247,18 @@ export default {
   font-weight: bold;
 }
 
+button {
+  cursor: pointer;
+  border: none;
+}
+
+.acciones {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin-top: 20px;
+}
+
 .btn {
   display: inline-block;
   padding: 10px 20px;
@@ -177,6 +276,67 @@ export default {
 
 .btn:hover {
   background-color: #0056b3;
+}
+
+/* Estilos del modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  max-width: 100%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal h3 {
+  margin-bottom: 20px;
+}
+
+.modal textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  resize: none;
+  box-sizing: border-box;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.modal-actions button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.modal-actions button:first-child {
+  background-color: #ccc;
+}
+
+.modal-actions button:last-child {
+  background-color: #28a745;
+  color: white;
+}
+
+.modal-actions button:hover {
+  opacity: 0.8;
 }
 
 </style>
