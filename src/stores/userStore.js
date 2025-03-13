@@ -1,5 +1,4 @@
 import {defineStore} from "pinia"
-import {actualizarToken, logoutAuth} from "@/helper/getUsuarioAuth.js";
 
 const usuarioVacio = {
     id: 0,
@@ -10,6 +9,10 @@ const usuarioVacio = {
     updated_at: ""
 }
 
+/**
+ * Almacena el usuario logueado y su token de acceso
+ * @type {StoreDefinition<"userStore", {user: {id: number, name: string, email: string, email_verified_at: string, created_at: string, updated_at: string}, isLoggedIn: boolean, access_token: null}, {}, {login({user: *, access_token: *}): void, logout(): void, checkTokenValidity(): void}>}
+ */
 const userStore = defineStore("userStore", {
 
     state: () => ({
@@ -19,6 +22,12 @@ const userStore = defineStore("userStore", {
     }),
 
     actions: {
+
+        /**
+         * Loguea al usuario
+         * @param user
+         * @param access_token
+         */
         login({user, access_token}) {
             if (!access_token) return
 
@@ -28,6 +37,9 @@ const userStore = defineStore("userStore", {
             localStorage.setItem("userStore", JSON.stringify({user, access_token}))
         },
 
+        /**
+         * Cierra la sesión de un usuario autentic
+         */
         logout() {
             //logoutAuth().then(
             //    () => {
@@ -43,6 +55,9 @@ const userStore = defineStore("userStore", {
            // )
         },
 
+        /**
+         * Valida el token del usuario si esta caducado o no
+         */
         checkTokenValidity() {
             const stored = JSON.parse(localStorage.getItem("userStore"))
             if (stored && stored.access_token) {
