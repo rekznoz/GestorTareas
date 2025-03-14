@@ -45,7 +45,7 @@ export default {
 .descripcion {
   text-align: center;
   margin-top: 50px;
-  background-color: #f8f9fa;
+  background-color: var(--color-fondo-terciario);
   padding: 25px 25px;
   border-radius: 10px;
   margin-bottom: 40px;
@@ -64,7 +64,7 @@ export default {
 /* Formulario */
 
 .formulario {
-  background-color: #f8f9fa;
+  background-color: var(--color-fondo-cuaternario);
   padding: 50px 20px;
   border-radius: 10px;
   display: flex;
