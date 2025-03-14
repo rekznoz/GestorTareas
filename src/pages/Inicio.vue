@@ -75,7 +75,7 @@ export default {
 
 #caracteristicas {
   margin-bottom: 40px;
-  background-color: #cccccc;
+  background-color: var(--color-fondo-cuaternario);
   padding: 50px 20px;
   border-radius: 10px;
 }
@@ -94,7 +94,7 @@ export default {
 }
 
 .caracteristica {
-  background-color: #f8f9fa;
+  background-color: var(--color-fondo-terciario);
   padding: 20px;
   border-radius: 10px;
 }
