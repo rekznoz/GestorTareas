@@ -49,6 +49,7 @@ export default {
   padding: 25px 25px;
   border-radius: 10px;
   margin-bottom: 40px;
+  color: var(--color-texto-secundario);
 }
 
 .descripcion h2 {
@@ -72,6 +73,7 @@ export default {
   align-items: center;
   max-width: 600px;
   margin: 0 auto;
+  color: var(--color-texto-secundario);
 }
 
 .form-group {
