@@ -460,6 +460,7 @@ button {
   text-align: center;
   font-style: italic;
   color: #888;
+  margin-top: 20px;
 }
 
 .paginacion {
