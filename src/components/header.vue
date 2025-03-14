@@ -106,6 +106,15 @@ button {
     gap: 15px;
     text-align: center;
   }
+  .nav-link {
+    font-size: 17px;
+  }
+}
+
+@media (max-width: 500px) {
+  .nav-link {
+    font-size: 16px;
+  }
 }
 
 </style>
