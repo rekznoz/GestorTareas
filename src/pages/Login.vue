@@ -79,6 +79,7 @@ export default {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
+  color: var(--color-texto-secundario);
 }
 
 /* Descripción */
@@ -168,7 +169,7 @@ export default {
 .registro {
   margin-top: 20px;
   text-decoration: none;
-  color: #000000;
+  color: var(--color-texto-terciario);
   font-weight: bold;
 }
 
