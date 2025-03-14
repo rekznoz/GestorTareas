@@ -102,12 +102,13 @@ export default {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
+  color: var(--color-texto-secundario);
 }
 
 /* Formulario */
 
 .formulario {
-  background-color: #f8f9fa;
+  background-color: var(--color-fondo-cuaternario);
   padding: 50px 50px;
   border-radius: 10px;
   display: flex;
@@ -161,7 +162,7 @@ export default {
 .registro {
   margin-top: 20px;
   text-decoration: none;
-  color: #000000;
+  color: var(--color-texto-terciario);
   font-weight: bold;
 }
 
