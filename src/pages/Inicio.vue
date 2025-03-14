@@ -110,4 +110,25 @@ export default {
   font-size: 1rem;
 }
 
+@media (max-width: 768px) {
+  .caracteristicas {
+    grid-template-columns: 1fr;
+  }
+
+  #caracteristicas h2 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 500px) {
+
+  .caracteristica h3 {
+    font-size: 1.2rem;
+  }
+
+  .caracteristica p {
+    font-size: 0.9rem;
+  }
+}
+
 </style>
