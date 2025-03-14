@@ -8,4 +8,4 @@
 
 📄 [PROPUESTA.md](PROPUESTA.md)
 
-[Documentación](https://tareaseverywhere.netlify.app/)
+📄 [Documentación](https://rekznoz.github.io/GestorTareas/documentacion/)
