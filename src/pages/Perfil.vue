@@ -93,7 +93,7 @@ export default {
   max-width: 600px;
   margin: 0 auto;
   padding: 20px;
-  background-color: #f9f9f9;
+  background-color: var(--color-fondo-cuaternario);
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
@@ -105,12 +105,12 @@ export default {
 .title {
   font-size: 2rem;
   margin-bottom: 10px;
-  color: #333;
+  color: var(--color-texto-principal);
 }
 
 .subtitle {
   font-size: 1rem;
-  color: #555;
+  color: var(--color-texto-principal);
 }
 
 .mode-switcher {
@@ -123,7 +123,7 @@ export default {
 .mode-switcher label {
   margin-right: 10px;
   font-size: 1rem;
-  color: #333;
+  color: var(--color-texto-principal);
 }
 
 .mode-switcher input {
