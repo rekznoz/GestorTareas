@@ -65,4 +65,28 @@ export default {
 .btn:hover {
   background-color: #0056b3;
 }
+
+@media (max-width: 768px) {
+  .seccion {
+    padding: 30px 10px;
+  }
+
+  .seccion h2 {
+    font-size: 2rem;
+  }
+
+  .seccion p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .seccion h2 {
+    font-size: 1.5rem;
+  }
+
+  .seccion p {
+    font-size: 0.9rem;
+  }
+}
 </style>
