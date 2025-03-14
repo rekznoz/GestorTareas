@@ -27,7 +27,7 @@ export default {
 </script>
 
 <template>
-  <section class="seccion" :style="{ backgroundColor: bgColor }">
+  <section class="seccion" >
     <h2>{{ titulo }}</h2>
     <p>{{ texto }}</p>
     <a :href="enlaceHref" class="btn">{{ enlaceTexto }}</a>
@@ -40,6 +40,7 @@ export default {
   padding: 50px 20px;
   border-radius: 10px;
   margin-bottom: 40px;
+  background-color: var(--color-fondo-cuaternario);
 }
 
 .seccion h2 {
