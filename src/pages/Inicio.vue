@@ -121,7 +121,6 @@ export default {
 }
 
 @media (max-width: 500px) {
-
   .caracteristica h3 {
     font-size: 1.2rem;
   }
