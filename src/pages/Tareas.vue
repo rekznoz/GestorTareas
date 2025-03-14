@@ -87,9 +87,27 @@ export default {
     /**
      * Método para manejar el drop de una tarea
      */
-    handleDrop() {
+    handleDropEliminar() {
       if (this.tareaArrastrada !== null) {
         this.eliminarTarea(this.tareaArrastrada);
+      }
+    },
+
+    /**
+     * Método para manejar el drop de una tarea
+     */
+    handleDropEditar() {
+      if (this.tareaArrastrada !== null) {
+        this.edicionTarea(this.tareaArrastrada);
+      }
+    },
+
+    /**
+     * Método para manejar el drop de una tarea
+     */
+    handleDropVer() {
+      if (this.tareaArrastrada !== null) {
+        router.push(`/tarea/${this.tareaArrastrada}`);
       }
     },
 
@@ -299,7 +317,7 @@ export default {
             @dragend="dragEnd">
           <span>{{ tarea.nombre }}</span>
           <div class="acciones">
-            <router-link v-if="!configStore().dragAndDrop" :to="`/tarea/${tarea.id}`" class="btn">Ver</router-link>
+            <router-link :to="`/tarea/${tarea.id}`" class="btn">Ver</router-link>
             <button v-if="userStore().user.id === tarea.user_id && !configStore().dragAndDrop" @click="edicionTarea(tarea.id)" class="btn">
               Editar
             </button>
@@ -327,20 +345,14 @@ export default {
 
     <!-- Zona de eliminación -->
     <div v-if="userStore().user.id === id && tareasPaginadas.length >= 1 && configStore().dragAndDrop" class="dropzone eliminar" @dragover.prevent
-         @drop="handleDrop">
+         @drop="handleDropEliminar">
       🗑️ Arrastra aquí para eliminar
     </div>
 
     <!-- Zona de Edicion -->
     <div v-if="userStore().user.id === id && tareasPaginadas.length >= 1 && configStore().dragAndDrop" class="dropzone editar" @dragover.prevent
-         @drop="handleDrop">
+         @drop="handleDropEditar">
       📝 Arrastra aquí para editar
-    </div>
-
-    <!-- Zona de Ver -->
-    <div v-if="userStore().user.id === id && tareasPaginadas.length >= 1 && configStore().dragAndDrop" class="dropzone ver" @dragover.prevent
-         @drop="handleDrop">
-      👁️ Arrastra aquí para ver
     </div>
 
     <button v-if="userStore().user.id === id" @click="mostrarOcultarModal()" class="btn-crear">Crear Tarea</button>
@@ -348,15 +360,6 @@ export default {
   </div>
 
   <!-- Modal para crear tarea -->
-  <!--
-    {
-    "nombre": "Desarrollar API de Tareas",
-    "descripcion": "Crear el CRUD de tareas usando Laravel.",
-    "fecha_inicio": "2025-03-08",
-    "fecha_fin": "2025-03-15",
-    "estado": "pendiente"
-    }
-   -->
   <div class="contenedor-modal-crear-tarea">
     <form class="modal-crear-tarea" @submit.prevent="enviarFormularioTarea">
       <h2>{{ esEdicion ? 'Editar Tarea' : 'Crear Tarea' }}</h2>
