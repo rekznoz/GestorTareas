@@ -297,7 +297,7 @@ export default {
 .container {
   width: 90%;
   max-width: 500px;
-  background: #fef7e5;
+  background: var(--color-fondo-cuaternario);
   padding: 20px;
   border-radius: 10px;
   box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
@@ -379,7 +379,7 @@ button {
 }
 
 .modal {
-  background-color: white;
+  background-color: var(--color-fondo-cuaternario);
   padding: 20px;
   border-radius: 8px;
   width: 400px;
@@ -431,9 +431,9 @@ button {
 .comentarios {
   margin-top: 20px;
   padding: 15px;
-  background: #f3f3f3;
+  background: var(--color-fondo-cuaternario);
   border-radius: 8px;
-  color: #333;
+  color: var(--color-texto-principal);
   box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
 }
 
