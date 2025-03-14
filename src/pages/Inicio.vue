@@ -69,6 +69,7 @@ export default {
   max-width: 1200px;
   margin: 25px auto;
   padding: 0 20px;
+  color: var(--color-texto-secundario);
 }
 
 /* Características */
